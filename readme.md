@@ -88,7 +88,7 @@ All the server http error code must be registered inside the __init__ method of 
 
 Example:
 ```python
-server.register_error_handler(500, Controllers.Web.HTTP50XController.error500)
+srv.add_exception_handler(500, Controllers.Web.HTTP50XController.error500)
 ```
 
 * Web based http file routes:
@@ -97,7 +97,7 @@ All the web based http routes must be registered inside the __init__ method of t
 
 Example:
 ```python
-server.add_url_rule('/', 'home', Controllers.Web.HomeController.index, methods=['GET'])
+server.add_route('/', Controllers.Web.HomeController.index, methods=['GET'], 'home')
 ```
 
 * Rest api routes:
@@ -107,7 +107,7 @@ All the Rest API based routes must be registered inside the __init__ method of t
 
 Example:
 ```python
-server.add_url_rule('/api/', 'api', Controllers.WS.ApiController.index, methods=['GET'])
+server.add_api_route('/api/content/', Controllers.WS.ApiController.index, methods=['GET'], 'api.content')
 ```
 
 ## Creating controllers:
@@ -142,21 +142,6 @@ from Database import Database
 ```
 
 All models must be imported inside the ```__init__.py``` of your base module and you must import this module in the ```__init__.py``` of the ```Models.Persistent``` module
-
-## Creating scheduling tasks:
-
-Tasks are some python code that are running at specific interval time. These task must be placed inside the src/Task folder.
-After that you must add these line inside the src/server.py file to enable your task function:
-
-```python
-    Server.Process.add_task("Task.YourFileOrClass.YourStaticMethodOrClassMethod", second=30)
-```
-
-Note the task you are registering must be before the line:
-
-```python
-    Server.Process.start(args)
-```
 
 
 ## Static folder:
