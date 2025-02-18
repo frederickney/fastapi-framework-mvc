@@ -31,12 +31,6 @@ def parser():
         help='Create middleware\nexample:\npython -m fastapi_framework_mvc.cli --create-middleware test',
         required=False
     )
-    parser.add_argument(
-        '-db', '--database',
-        help="Run database operations see Flask-Migrate for usages",
-        required=False,
-        nargs="+"
-    )
     args = parser.parse_args()
     if args.create_project:
         make_project(os.getcwd(), args.create_project, os.path.dirname(os.path.realpath(__file__)))
@@ -46,10 +40,6 @@ def parser():
         exit(0)
     elif args.create_middleware:
         make_middleware(os.getcwd(), args.create_middleware)
-        exit(0)
-    elif args.database:
-        from fastapi_framework_mvc.Database.migration import Migrate
-        Migrate.run(app, args.database)
         exit(0)
 
 
