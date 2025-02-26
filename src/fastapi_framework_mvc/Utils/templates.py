@@ -10,8 +10,8 @@ class Route(object):
     def __init__(self, server):
         \"\"\"
         Constructor
-        :param server: Flask server
-        :type server: flask.Flask
+        :param server: FastAPI instance
+        :type server: fastapi.FastAPI
         :return: Route object
         \"\"\"
         import controllers
@@ -25,12 +25,12 @@ HTTP_DEFAULT_ENTRY = """class Route(object):
     def __init__(self, server):
         \"\"\"
         Constructor
-        :param server: Flask server
-        :type server: flask.Flask
+        :param server: FastAPI server
+        :type server: fastapi.FastAPI
         :return: Route object
         \"\"\"
         import controllers
-        server.add_url_rule('/', 'home', controllers.web.home.index, methods=["GET"])
+        server.add_route(path='/', route=controllers.web.home.index, methods=["GET"], name='home')
         return
 """
 
@@ -45,8 +45,8 @@ class Route(object):
     def __init__(self, server):
         \"\"\"
         Constructor
-        :param server: Flask server
-        :type server: flask.Flask
+        :param server: FastAPI server
+        :type server: fastapi.FastAPI
         :return: Route object
         \"\"\"
         import controllers
@@ -59,21 +59,21 @@ WS_ENTRY = """# coding: utf-8
 
 class Handler(object):
 
-    def __init__(self, socketio):
+    def __init__(self, app):
         \"\"\"
 
-        :param socketio:
-        :type socketio: flask_socketio.SocketIO
+        :param app:
+        :type app: fastapi.FastAPI
         \"\"\"
         import controllers
         return
 """
 
-ERROR_ENTRY = """        server.register_error_handler({}, {})\n"""
+ERROR_ENTRY = """        server.add_exception_handler({}, {})\n"""
 
 BASE_ERROR = """
-def http_{}(error):
-    return template('{}.html', title=error)
+def http_{}(request, exc):
+    return HTMLResponse(content="<h1>404</h1>", status_code=exc.status_code)
 """
 
 BASE_CONTROLLER = """# coding: utf-8
@@ -90,8 +90,8 @@ BASE_HOME_CONTROLLER = """
 class Controller(object):
 
     @staticmethod
-    def index():
-        return template("welcome.html")
+    def index(request):
+        return Process.templates.TemplateResponse(request=request, name="welcome.html")
 """
 
 BASE_MIDDLEWARE = """
@@ -126,14 +126,14 @@ HTTP_ERRORS = {
     500: 'controllers.web.errors.http_500'
 }
 
-FLASK_RENDERING_IMPORT = "from flask import render_template as template\n\n"
+FLASK_RENDERING_IMPORT = "from fastapi_framework_mvc.Server import Process\nfrom fastapi.responses import HTMLResponse\n\n"
 
 FLASK_FRAMEWORK_BASE_CONF = """SERVER:
     ENV: dev
     BIND:
         ADDRESS: localhost
         PORT: 4200
-    WORKERS: sync
+    WORKERS: uvicorn.workers.UvicornWorker
     CAPTURE: true
     THREADS_PER_CORE: 16
     LOG:

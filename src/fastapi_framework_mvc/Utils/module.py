@@ -23,8 +23,10 @@ def create_project(basepath, project):
 
     create_dir(os.path.join(basepath, project), 'controllers')
     generate(os.path.join(basepath, project), "{}/{}".format('controllers', 'web'))
+    generate(os.path.join(basepath, project), "{}/{}".format('controllers', 'ws'))
     create_dir(os.path.join(basepath, project), 'server')
     generate(os.path.join(basepath, project), "{}/{}".format('server', 'web'))
+    generate(os.path.join(basepath, project), "{}/{}".format('server', 'ws'))
 
 
 def generate(basepath, module, sub_module=None):
@@ -185,4 +187,5 @@ def create_server(project, path, _inst_dir):
     try_create_errors(path)
     try_create_error_controller(path)
     try_create_web_entry(path)
+    try_create_ws_entry(path)
     try_create_default_conf(path, project)

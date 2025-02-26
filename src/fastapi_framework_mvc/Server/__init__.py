@@ -81,6 +81,7 @@ class Process(object):
 
     @classmethod
     def _load_statics(cls):
+        from fastapi_framework_mvc.Config import Environment
         cls._app.mount(
             '/statics' if 'STATIC_URL' not in Environment.SERVER else Environment.SERVER['STATIC_URL'],
             StaticFiles(directory=Environment.SERVER['STATIC_PATH']), 
@@ -89,6 +90,7 @@ class Process(object):
     
     @classmethod
     def _load_templates(cls):
+        from fastapi_framework_mvc.Config import Environment
         cls.templates = Jinja2Templates(directory=Environment.SERVER['TEMPLATE_PATH'])
 
     @classmethod
