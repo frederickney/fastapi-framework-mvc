@@ -1,0 +1,19 @@
+SERVER:
+    ENV: dev
+    BIND:
+        ADDRESS: localhost
+        PORT: 4200
+    WORKERS: uvicorn.workers.UvicornWorker
+    CAPTURE: false
+    TEMPLATE_PATH: template
+    STATIC_PATH: static
+    STATIC_URL: /file
+    THREADS_PER_CORE: 16
+    LOG:
+        DIR: log
+        LEVEL: debug
+
+DATABASE: {}
+
+FASTAPI:
+  CONFIG: {}
