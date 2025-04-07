@@ -27,11 +27,18 @@ def load_file(file):
     return conf
 
 
+class Services(object):
+
+    def __init__(self, name, registry):
+        self.name = name,
+        self.registry = registry
+
 
 class Environment(object):
     Databases = {}
     SERVER = {}
     Logins = {}
+    Services = {}
     FASTAPI = {}
     __default_runtime_change = False
 
@@ -65,6 +72,7 @@ class Environment(object):
         cls.load_runtime(conf)
         cls.load_databases(conf)
         cls.load_logins(conf)
+        cls.load_services(conf)
         cls.FASTAPI = conf['FASTAPI'] if 'FASTAPI' in conf else cls.FASTAPI
         cls.FASTAPI.setdefault('CONFIG', {})
 
@@ -122,3 +130,15 @@ class Environment(object):
     def load_runtime(cls, conf):
         cls.SERVER = conf['SERVER']
 
+    @classmethod
+    def load_services(cls, conf):
+        cls.Services.update(conf['SERVICES'] if 'SERVICES' in conf else cls.Services)
+
+    @classmethod
+    def add_service(cls, service_name, service_conf):
+        service = cls.Services.get(service_name, None)
+        if service is None:
+            cls.Services[service_name] = service_conf
+        elif service is not None:
+            logging.warning("Service '{}' changed".format(service_name))
+            cls.Services[service_name] = service_conf

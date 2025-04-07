@@ -17,7 +17,7 @@ def secured(prop):
 
             def set_id(object, value):
                 property()
-                from fastapi_framework.Exceptions.QueryExceptions import PrimaryKeyChangeException
+                from fastapi_framework_mvc.Exceptions.QueryExceptions import PrimaryKeyChangeException
                 raise PrimaryKeyChangeException(
                     "Trying to change read only primary key id of {}[{}] by {}".format(
                         object.__class__.__name__,
