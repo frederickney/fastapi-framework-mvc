@@ -61,6 +61,17 @@ DATABASE:
     readonly: false
 ...
 ```
+
+
+By default escapte char between url and first param is __?__ and escape char between parameters is __&__ but they can be changed by adding within your database params section:
+
+```yaml
+...
+      url_param_separator: '?' #Change it with yours
+      params_separator: '&' #Change it with yours
+...
+```
+
 __"params"__ are parameters that need to be send within the connection to the database.
 In that example using informix database __"SERVER"__, __"CLIENT_LOCALE"__ and __"DB_LOCALE"__ are required parameters for the connection to the database.
 
@@ -111,6 +122,32 @@ server.add_api_route('/api/content/', Controllers.WS.ApiController.index, method
 ```
 
 ## Creating controllers:
+
+In case of database used within controllers, you will need to use __@safe__ from __fastapi_framework_mvc.Database.decorator__ over your function. Example bellow:
+
+
+```python
+
+from fastapi_framework_mvc.Database.decorator import safe
+
+
+class Content(object):
+
+    @safe
+    @staticmethod
+    def index(api_param):
+        return api_param
+
+
+class Controller(Content):
+
+    @classmethod
+    def index(cls, api_param:str):
+        return super(Controller, cls).index(api_param)
+
+
+```
+
 
 * Web based http file controllers:
 
