@@ -122,8 +122,7 @@ server.add_api_route('/api/content/', Controllers.WS.ApiController.index, method
 
 ## Creating controllers:
 
-In case of database used within controllers, you will need to use __@safe__ from __fastapi_framework_mvc.Database.decorator__ over your function. Example bellow:
-
+In case of database used within controllers, you will need to use __@safe__ from __fastapi_framework_mvc.Database.decorators__ over your function. Example bellow:
 
 ```python
 
