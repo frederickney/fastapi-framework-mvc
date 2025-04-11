@@ -62,8 +62,12 @@ DATABASE:
 ...
 ```
 
+__"params"__ are parameters that need to be send within the connection to the database.
+In that example using informix database __"SERVER"__, __"CLIENT_LOCALE"__ and __"DB_LOCALE"__ are required parameters for the connection to the database.
 
-By default escapte char between url and first param is __?__ and escape char between parameters is __&__ but they can be changed by adding within your database params section:
+__"dialects"__ are the python modules configuration to translate models into sql statements to query the database
+
+By default escape char between url and first param is __?__ and escape char between parameters is __&__ but they can be changed by adding within your database params section:
 
 ```yaml
 ...
@@ -71,11 +75,6 @@ By default escapte char between url and first param is __?__ and escape char bet
       params_separator: '&' #Change it with yours
 ...
 ```
-
-__"params"__ are parameters that need to be send within the connection to the database.
-In that example using informix database __"SERVER"__, __"CLIENT_LOCALE"__ and __"DB_LOCALE"__ are required parameters for the connection to the database.
-
-__"dialects"__ are the python modules configuration to translate models into sql statements to query the database
 
 ### Multiple databases
 
@@ -145,9 +144,7 @@ class Controller(Content):
     def index(cls, api_param:str):
         return super(Controller, cls).index(api_param)
 
-
 ```
-
 
 * Web based http file controllers:
 
