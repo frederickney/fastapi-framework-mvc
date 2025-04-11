@@ -127,7 +127,7 @@ In case of database used within controllers, you will need to use __@safe__ from
 
 ```python
 
-from fastapi_framework_mvc.Database.decorator import safe
+from fastapi_framework_mvc.Database.decorators import safe
 
 
 class Content(object):
