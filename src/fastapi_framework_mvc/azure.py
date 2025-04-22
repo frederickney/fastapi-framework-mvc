@@ -2,10 +2,7 @@
 
 import os
 import logging
-import ssl
-import multiprocessing
-from uvicorn import Config as UvicornConfig
-from uvicorn_worker import UvicornWorker as UvicornServer
+from logging.handlers import TimedRotatingFileHandler
 from fastapi_framework_mvc.Config import Environment
 from fastapi_framework_mvc.Server import Process
 from fastapi_framework_mvc.Database import Database
@@ -14,8 +11,6 @@ import azure.functions as func
 
 
 def AzureFunctionsApp():
-    import os
-    from logging.handlers import TimedRotatingFileHandler
     loglevel = 'warning'
     logging_dir_exist = False
     if os.environ.get("LOG_DIR", None):
