@@ -115,11 +115,11 @@ def main():
     except FileNotFoundError as e:
         pass
     logging.debug("Configuration file loaded...")
-    if 'default' in Environment.Databases:
-        logging.debug("Connecting to default database...")
+    if len(Environment.Databases) > 0:
+        logging.debug("Connecting to database(s)...")
         Database.register_engines(echo=Environment.SERVER['CAPTURE'])
         Database.init()
-        logging.debug("Default database connected...")
+        logging.debug("Database(s) connected...")
     Server.Process.init(tracking_mode=False)
     logging.debug("Server initialized...")
     Server.Process.load_plugins()

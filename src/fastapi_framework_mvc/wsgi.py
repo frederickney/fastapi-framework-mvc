@@ -181,14 +181,14 @@ if __name__ == '__main__':
         pass
     except PermissionError as e:
         pass
+    if len(Environment.Databases) > 0:
+        logging.debug("Connecting to database(s)...")
+        Database.register_engines(echo=Environment.SERVER['CAPTURE'])
+        Database.init()
+        logging.debug("Database(s) connected...")
     logging.info("Loading options...")
     Server.load_options()
     logging.info("Options loaded...")
-    if 'default' in Environment.Databases:
-        logging.debug("Connecting to default database...")
-        Database.register_engines(echo=Environment.SERVER['CAPTURE'])
-        Database.init()
-        logging.debug("Default database connected...")
     logging.info("Starting the server...")
     try:
         Server().run()
