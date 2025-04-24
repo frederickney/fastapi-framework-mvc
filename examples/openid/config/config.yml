@@ -1,0 +1,23 @@
+SERVER:
+    ENV: dev
+    BIND:
+        ADDRESS: localhost
+        PORT: 4200
+    WORKERS: uvicorn.workers.UvicornWorker
+    CAPTURE: true
+    THREADS_PER_CORE: 16
+    LOG:
+        DIR: log
+        LEVEL: debug
+
+DATABASES: 
+
+FASTAPI:
+  CONFIG:     
+    OIDC_CLIENT_SECRETS: config/secrets.yml
+    OIDC_OPENID_REALM: <name of the openid realm>
+    OIDC_SCOPES:
+      - openid
+      - email
+    OIDC_INTROSPECTION_AUTH_METHOD: client_secret_post
+    OIDC_USER_INFO_ENABLED: true
