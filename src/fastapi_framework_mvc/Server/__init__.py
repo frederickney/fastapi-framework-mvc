@@ -69,14 +69,10 @@ class Process(object):
         if 'CONFIG' in Environment.FASTAPI:
             if Environment.FASTAPI['CONFIG'] is not None:
                 cls._app.extra.update(Environment.FASTAPI['CONFIG'])
-            if 'OpenID' in Environment.Logins:
-                from fastapi_login_oidc import OIDC
-                cls.openid = OIDC(prefix='OpenID')
+            if 'OIDC' in Environment.Logins:
+                from fastapi_oidc import FastAPIOIDC
+                cls.openid = FastAPIOIDC()
                 cls.openid.init_app(cls._app)
-            if 'SAML2' in Environment.Logins:
-                from fastapi_login_saml.client import SAML
-                cls.saml = SAML(prefix='SAML2')
-                cls.saml.init_app(cls._app)
         return cls._app
 
     @classmethod
