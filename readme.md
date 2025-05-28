@@ -216,6 +216,30 @@ docker-compose stop
 
 ---
 
+# Running on Azure Function App:
+
+```python title="function_app.py"
+# coding: utf-8
+import azure.functions as functions
+import fastapi_framework_mvc.azure 
+import logging
+import os
+
+
+os.environ.setdefault('CONFIG_FILE', './config/config.yml')
+app = functions.AsgiFunctionApp(fastapi_framework_mvc.azure.AzureFunctionsApp(), http_auth_level=functions.AuthLevel.ANONYMOUS)
+```
+
+* Make sure to have in your __host.json__:
+
+```json
+...
+  "extensions": {
+    "http": { "routePrefix": ""}
+  },
+...
+```
+
 # Running on local desktop:
 
 We assume that your system already had python v3+ and pip v3+ installed.
