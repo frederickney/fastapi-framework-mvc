@@ -12,23 +12,6 @@ import fastapi_framework_mvc.Server as Server
 from fastapi_framework_mvc.Config import Environment
 from fastapi_framework_mvc.Database import Database
 
-try:
-    import gevent.monkey
-
-    gevent.monkey.patch_all()
-except ImportError as e:
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s %(levelname)s %(message)s'
-    )
-    logging.error('{}: gevent not found in python packages'.format(__file__))
-    logging.info(
-        '{}: gevent is not required if running wsgi as it depends on your worker class you put into the configuration file'
-        .format(__file__)
-    )
-    exit(-1)
-
-
 def args_parser():
     import argparse
     parser = argparse.ArgumentParser(description='Python FLASK server')
