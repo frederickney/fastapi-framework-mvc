@@ -19,7 +19,7 @@ You can add default database using only the configuration file.
 
 ```yaml
 ...
-DATABASE: 
+DATABASES: 
   default: mysql
   mysql: 
     driver: mysql+pymysql
@@ -36,7 +36,7 @@ DATABASE:
 
 ```yaml
 ...
-DATABASE:
+DATABASES:
   informix:
     driver: informix
     user: "replace this with your database user"
@@ -80,7 +80,7 @@ By default escape char between url and first param is __?__ and escape char betw
 
 ```yaml
 ...
-DATABASE:
+DATABASES:
   db01:
     ...
   db02:
