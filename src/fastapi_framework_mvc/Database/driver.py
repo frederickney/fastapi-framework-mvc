@@ -5,6 +5,13 @@ __author__ = 'Frederick NEY'
 
 import logging
 
+import sqlalchemy.orm.query
+
+try:
+    import pandas
+except ImportError:
+    pass
+
 from sqlalchemy import create_engine, Engine
 from sqlalchemy.dialects import registry
 from sqlalchemy.orm import declarative_base
@@ -284,3 +291,30 @@ class Driver(object):
         :return: N/A
         """
         Driver.close_sessions()
+
+    @classmethod
+    def to_pandas(cls, query: sqlalchemy.orm.query.Query, engine: str = None):
+        """
+        Convert SQLAlchemy query object into pandas Dataframe
+        Experimental use at your own risk.
+        :param query: SQLAlchemy query
+        :type query: sqlalchemy.orm.query.Query
+        :param engine: Database connection to use
+        :type engine: str | None
+        :return:
+        :rtype: pandas.DataFrame | None
+        """
+        try:
+            if engine is None:
+                return pandas.read_sql(
+                    str(query.statement.compile(compile_kwargs={"literal_binds": True})),
+                    cls.engine
+                )
+            else:
+                return pandas.read_sql(
+                    str(query.statement.compile(compile_kwargs={"literal_binds": True})),
+                    cls.engines[engine]
+                )
+        except NameError as e:
+            logging.error("{}: pandas not installed as {}".format(__name__, e))
+        return None
