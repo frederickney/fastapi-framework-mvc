@@ -1,0 +1,10 @@
+{% extends "layout/index.html" %}
+
+{% block content %}
+<h3>
+    {{ request.url.path }}
+</h3>
+<p>
+    {{ error.detail }}
+</p>
+{% endblock %}

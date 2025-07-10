@@ -62,10 +62,16 @@ class Process(object):
         from fastapi import FastAPI
         from fastapi_framework_mvc.Config import Environment
         cls._app = FastAPI()
-        if 'STATIC_PATH' in Environment.SERVER:
-            cls._load_statics()
-        if 'TEMPLATE_PATH' in Environment.SERVER:
-            cls._load_templates()
+        Environment.SERVER.setdefault(
+            'STATIC_PATH', 
+            os.path.join(pathlib.Path(__file__).resolve().parent.resolve().parent, 'static')
+        )
+        Environment.SERVER.setdefault(
+            'TEMPLATE_PATH', 
+            os.path.join(pathlib.Path(__file__).resolve().parent.resolve().parent, 'templates')
+        )
+        cls._load_statics()
+        cls._load_templates()
         if 'CONFIG' in Environment.FASTAPI:
             if Environment.FASTAPI['CONFIG'] is not None:
                 cls._app.extra.update(Environment.FASTAPI['CONFIG'])
