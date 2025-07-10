@@ -78,4 +78,3 @@ app = Server.Process.get()
 
 if __name__ == '__main__':
     parser()
-    app.run(host=Environment.SERVER['BIND']['ADDRESS'], port=Environment.SERVER['BIND']['PORT'])

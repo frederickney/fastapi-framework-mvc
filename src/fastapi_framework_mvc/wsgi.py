@@ -99,7 +99,7 @@ class Server(gunicorn.app.base.Application):
     @classmethod
     def load_options(cls):
         cls.options = {
-            'bind': '%s:%i' % (Environment.SERVER['BIND']['ADDRESS'], Environment.SERVER['BIND']['PORT']),
+            'bind': '%s:%i' % (Environment.SERVER['BIND']['ADDRESS'], int(Environment.SERVER['BIND']['PORT'])),
             'workers': Server.number_of_workers(),
             'threads': Environment.SERVER['THREADS_PER_CORE'],
             'capture_output': Environment.SERVER['CAPTURE'],
