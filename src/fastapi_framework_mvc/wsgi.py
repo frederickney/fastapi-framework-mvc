@@ -48,7 +48,6 @@ class Logging():
     @classmethod
     def set_loglevel(cls, loglevel):
         cls._loglevel = loglevel
-        print(cls._loglevel)
 
     @classmethod
     def get_loglevel(cls):
@@ -182,7 +181,6 @@ def main(args: argparse.ArgumentParser):
     logging.info("Configuration file loaded...")
     try:
         Logging.set_loglevel(Environment.SERVER['LOG']['LEVEL'])
-        print(Logging.get_loglevel())
         logging.getLogger().setLevel(Logging.get_loglevel().upper())
     except KeyError as e:
         logging.error(e)
@@ -220,7 +218,6 @@ def main(args: argparse.ArgumentParser):
     logging.info("Options loaded...")
     logging.info("Starting the server...")
     try:
-        print(Logging.get_loglevel())
         Server().run()
     except RuntimeError as e:
         exit(255)
