@@ -4,7 +4,7 @@
 __author__ = 'Frederick NEY'
 
 import logging
-
+import typing
 import sqlalchemy.orm.query
 import sqlalchemy.sql.selectable
 
@@ -13,7 +13,15 @@ try:
 except ImportError:
     pass
 
-from sqlalchemy import create_engine, Engine
+try:
+    import pandas
+except ImportError:
+    pass
+try:
+    from sqlalchemy import create_engine, Engine
+except ImportError:
+    from sqlalchemy import create_engine
+    from sqlalchemy.engine import Engine
 from sqlalchemy.dialects import registry
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -294,7 +302,7 @@ class Driver(object):
         Driver.close_sessions()
 
     @classmethod
-    def to_pandas(cls, query: sqlalchemy.orm.query.Query | sqlalchemy.sql.selectable.Select, engine: str = None):
+    def to_pandas(cls, query: typing.Union[sqlalchemy.orm.query.Query, sqlalchemy.sql.selectable.Select], engine: str = None):
         """
         Convert SQLAlchemy query object into pandas Dataframe
         Experimental use at your own risk.
