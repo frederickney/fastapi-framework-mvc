@@ -17,12 +17,42 @@ try:
 except ImportError as e:
     pass
 
+import argparse
 import multiprocessing
 
 import gunicorn.app.base
 from six import iteritems
 
+import os
+import logging
+from logging.handlers import TimedRotatingFileHandler
+import fastapi_framework_mvc.Server as Process
+from fastapi_framework_mvc.Config import Environment
+
 from fastapi_framework_mvc.Database import Database
+
+parser = argparse.ArgumentParser(description='Python FLASK USGI server')
+parser.add_argument(
+    '-d', '--disable-log-files',
+    action='store_true',
+    required=False,
+    help='Activate log verbosity mode'
+)
+
+
+
+class Logging():
+    logging_dir_exist = False
+    _loglevel = 'warning'
+
+    @classmethod
+    def set_loglevel(cls, loglevel):
+        cls._loglevel = loglevel
+        print(cls._loglevel)
+
+    @classmethod
+    def get_loglevel(cls):
+        return cls._loglevel
 
 
 class Server(gunicorn.app.base.Application):
@@ -38,7 +68,6 @@ class Server(gunicorn.app.base.Application):
 
     @staticmethod
     def application():
-        import logging
         from fastapi_framework_mvc.Server import Process
         logging.info("Initializing the server...")
         Process.init(tracking_mode=False)
@@ -103,11 +132,11 @@ class Server(gunicorn.app.base.Application):
             'workers': Server.number_of_workers(),
             'threads': Environment.SERVER['THREADS_PER_CORE'],
             'capture_output': Environment.SERVER['CAPTURE'],
-            "loglevel": loglevel,
+            "loglevel": Logging.get_loglevel(),
             "worker_class": Environment.SERVER['WORKERS'],
             "reload_engine": 'poll'
         }
-        if logging_dir_exist:
+        if Logging.logging_dir_exist:
             cls.options["errorlog"] = os.path.join(os.environ.get("log_dir"), 'fastapi-error.log')
             cls.options["accesslog"] = os.path.join(os.environ.get("log_dir"), 'fastapi-access.log')
         if 'SSL' in Environment.SERVER:
@@ -115,37 +144,34 @@ class Server(gunicorn.app.base.Application):
             cls.options["keyfile"] = Environment.SERVER['SSL']['PrivateKey']
 
 
-if __name__ == '__main__':
-    import os
-    import fastapi_framework_mvc.Server as Process
-    import logging
-    from logging.handlers import TimedRotatingFileHandler
-    from fastapi_framework_mvc.Config import Environment
-
-    loglevel = 'warning'
-    logging_dir_exist = False
-    if os.environ.get("LOG_DIR", None):
-        os.environ.setdefault("log_dir", os.environ.get("LOG_DIR", "/var/log/server/"))
-        os.environ.setdefault("log_file", os.path.join(os.environ.get("log_dir"), 'process.log'))
-        if not os.path.exists(os.path.dirname(os.environ.get('log_file'))):
-            os.mkdir(os.path.dirname(os.environ.get('log_file')), 0o755)
-    if os.environ.get("log_file", None):
-        logging.basicConfig(
-            level=loglevel.upper(),
-            format='%(asctime)s %(levelname)s %(message)s',
-            handlers=[
-                TimedRotatingFileHandler(
-                    filename=os.environ.get('log_file'),
-                    when='midnight',
-                    backupCount=30
-                )
-            ]
-        )
-        logging_dir_exist = True
+def main(args: argparse.ArgumentParser):
+    if not args.disable_log_files:
+        if os.environ.get("LOG_DIR", None):
+            os.environ.setdefault("log_dir", os.environ.get("LOG_DIR", "/var/log/server/"))
+            os.environ.setdefault("log_file", os.path.join(os.environ.get("log_dir"), 'process.log'))
+            if not os.path.exists(os.path.dirname(os.environ.get('log_file'))):
+                os.mkdir(os.path.dirname(os.environ.get('log_file')), 0o755)
+        if os.environ.get("log_file", None):
+            logging.basicConfig(
+                level=Logging.get_loglevel().upper(),
+                format='%(asctime)s %(levelname)s %(message)s',
+                handlers=[
+                    TimedRotatingFileHandler(
+                        filename=os.environ.get('log_file'),
+                        when='midnight',
+                        backupCount=30
+                    )
+                ]
+            )
+            Logging.logging_dir_exist = True
+        else:
+            logging.basicConfig(
+                level=Logging.get_loglevel().upper(),
+                format='%(asctime)s %(levelname)s %(message)s',
+            )
     else:
         logging.basicConfig(
-            level=loglevel.upper(),
-            format='%(asctime)s %(levelname)s %(message)s',
+            level=Logging.get_loglevel().upper(),
         )
     logging.info("Loading configuration file...")
     if 'CONFIG_FILE' in os.environ:
@@ -155,26 +181,29 @@ if __name__ == '__main__':
         os.environ.setdefault('CONFIG_FILE', "/etc/server/config.json")
     logging.info("Configuration file loaded...")
     try:
-        loglevel = Environment.SERVER['LOG']['LEVEL']
-        logging.getLogger().setLevel(loglevel.upper())
+        Logging.set_loglevel(Environment.SERVER['LOG']['LEVEL'])
+        print(Logging.get_loglevel())
+        logging.getLogger().setLevel(Logging.get_loglevel().upper())
     except KeyError as e:
+        logging.error(e)
         pass
-    logging_dir_exist = False
+    Logging.logging_dir_exist = False
     try:
-        if not os.path.exists(Environment.SERVER["LOG"]["DIR"]):
-            os.mkdir(Environment.SERVER["LOG"]["DIR"], 0o755)
-        RotatingLogs = TimedRotatingFileHandler(
-            filename=os.path.join(Environment.SERVER["LOG"]["DIR"], 'process.log'),
-            when='midnight',
-            backupCount=30
-        )
-        RotatingLogs.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
-        logging.getLogger().handlers = [
-            RotatingLogs
-        ]
+        if not args.disable_log_files:
+            if not os.path.exists(Environment.SERVER["LOG"]["DIR"]):
+                os.mkdir(Environment.SERVER["LOG"]["DIR"], 0o755)
+            RotatingLogs = TimedRotatingFileHandler(
+                filename=os.path.join(Environment.SERVER["LOG"]["DIR"], 'process.log'),
+                when='midnight',
+                backupCount=30
+            )
+            RotatingLogs.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
+            logging.getLogger().handlers = [
+                RotatingLogs
+            ]
+            Logging.logging_dir_exist = True
+            os.environ.setdefault("log_dir", Environment.SERVER["LOG"]["DIR"])
         logging.info('Logging handler initialized')
-        os.environ.setdefault("log_dir", Environment.SERVER["LOG"]["DIR"])
-        logging_dir_exist = True
     except KeyError as e:
         pass
     except FileNotFoundError as e:
@@ -191,6 +220,13 @@ if __name__ == '__main__':
     logging.info("Options loaded...")
     logging.info("Starting the server...")
     try:
+        print(Logging.get_loglevel())
         Server().run()
     except RuntimeError as e:
         exit(255)
+
+
+if __name__ == '__main__':
+    args = parser.parse_args()
+    main(args)
+
