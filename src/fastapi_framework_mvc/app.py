@@ -52,11 +52,15 @@ try:
         level=loglevel.upper(),
         format='%(asctime)s %(levelname)s %(message)s'
     )
+    root_logger = logging.getLogger()
+    root_logger.setLevel(loglevel.upper())
 except KeyError as e:
     logging.basicConfig(
         level=logging.getLevelName(logging.INFO),
         format='%(asctime)s %(levelname)s %(message)s'
     )
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.INFO)
 logging.debug("Connecting to database(s)...")
 Database.register_engines(echo=Environment.SERVER['CAPTURE'])
 Database.init()
