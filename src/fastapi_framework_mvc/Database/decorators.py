@@ -22,7 +22,6 @@ def _rollback():
         Driver.session.rollback()
     except Exception as e:
         logging.error(e)
-        raise e
 
 
 def safe(func):
