@@ -3,10 +3,14 @@
 
 __author__ = 'Frederick NEY'
 
+import logging
 import fastapi_framework_mvc.Exceptions as Exceptions
-
+from fastapi_framework_mvc.Deprecation import Future
 
 def _load(file):
+    """
+    :deprecated : will be removed on version 1.2.0
+    """
     import os.path, json
     from json import JSONDecodeError
     if isinstance(file, str):
@@ -16,6 +20,11 @@ def _load(file):
                 try:
                     content = json.load(fd)
                     fd.close()
+                    logging.warning(
+                        "If you see this, that means you are using a soon to be removed file format.\n"
+                        "And the above warning is related to your configuration.\n"
+                        "Consider using the yaml file format for better environ and secrets variable load"
+                    )
                     return content
                 except JSONDecodeError as e:
                     raise Exceptions.ConfigExceptions.InvalidConfigurationFileError(
@@ -31,6 +40,6 @@ def _load(file):
             "Expected " + type(str) + ", got " + type(file) + "."
         )
 
-
+@Future.remove("1.2.0")
 def load(file):
     return _load(file)
