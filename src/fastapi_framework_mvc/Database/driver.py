@@ -27,7 +27,6 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from fastapi_framework_mvc.Config import Environment
-from fastapi_framework_mvc.Deprecation import deprecated, outdated, Future
 
 
 class Driver(object):
@@ -164,24 +163,6 @@ class Driver(object):
                 )
 
     @classmethod
-    @Future.remove
-    def start_sessions(cls):
-        for driver, config in Environment.Databases.items():
-            cls.start_session(driver)
-            if driver == 'default':
-                cls.start_default_session()
-
-    @classmethod
-    @Future.remove
-    def start_session(cls, name):
-        cls.sessions[name] = scoped_session(cls._sessionmakers[name])
-
-    @classmethod
-    @Future.remove
-    def start_default_session(cls):
-        cls.session = scoped_session(cls._sessionmaker)
-
-    @classmethod
     def close_sessions(cls):
         for driver, config in Environment.Databases.items():
             cls.close_session(driver)
@@ -205,16 +186,6 @@ class Driver(object):
         app.config["SESSION_SQLALCHEMY_TABLE"] = 'sessions'
         app.config["SESSION_SQLALCHEMY"] = cls.engine
         return app
-
-    @classmethod
-    @outdated
-    def add_task_db_session(cls, task_name, db='default'):
-        pass
-
-    @classmethod
-    @outdated
-    def get_task_session(cls, task_name):
-        pass
 
     @classmethod
     def init_default_db(cls):
@@ -280,26 +251,6 @@ class Driver(object):
     def reconnect_all(cls):
         cls.disconnect_all()
         cls.register_engines()
-
-    @classmethod
-    @outdated
-    def save(cls):
-        pass
-
-    @staticmethod
-    @outdated
-    def update():
-        pass
-
-    @staticmethod
-    @deprecated('Use close_sessions')
-    def shutdown_session(exception=None):
-        """
-        Function that means to be used for ending database session before the server will be shut down
-        :param exception:
-        :return: N/A
-        """
-        Driver.close_sessions()
 
     @classmethod
     def to_pandas(cls, query: typing.Union[sqlalchemy.orm.query.Query, sqlalchemy.sql.selectable.Select], engine: str = None):

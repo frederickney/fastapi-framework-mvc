@@ -17,13 +17,8 @@ def _load(file, loader):
 
 
 def load_file(file):
-    try:
-        from . import json
-        conf = _load(file, json)
-    except Exceptions.ConfigExceptions.InvalidConfigurationFileError as e:
-        logging.info(e.message)
-        from . import yaml
-        conf = _load(file, yaml)
+    from . import yaml
+    conf = _load(file, yaml)
     return conf
 
 
@@ -48,13 +43,8 @@ class Environment(object):
 
     @classmethod
     def reload(cls, file):
-        try:
-            from . import json
-            conf = cls._load(file, json)
-        except Exceptions.ConfigExceptions.InvalidConfigurationFileError as e:
-            logging.info(e.message)
-            from . import yaml
-            conf = cls._load(file, yaml)
+        from . import yaml
+        conf = cls._load(file, yaml)
         cls.load_runtime(conf)
         cls.load_logins(conf)
         cls.load_services(conf)
@@ -62,13 +52,8 @@ class Environment(object):
 
     @classmethod
     def load(cls, file):
-        try:
-            from . import json
-            conf = cls._load(file, json)
-        except Exceptions.ConfigExceptions.InvalidConfigurationFileError as e:
-            logging.info(e.message)
-            from . import yaml
-            conf = cls._load(file, yaml)
+        from . import yaml
+        conf = cls._load(file, yaml)
         cls.load_runtime(conf)
         cls.load_databases(conf)
         cls.load_logins(conf)
