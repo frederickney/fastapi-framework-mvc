@@ -38,6 +38,14 @@ class Environment(object):
     """
     Class Environment act as a singleton where after loaded all
     the content of the attributes is available at any part of the project.
+
+    Requires CONFIG_FILE environment variable to be set before loading.
+
+    Needs to be loaded first with:
+
+    >>> import os
+    >>> Environment.load(os.environ['CONFIG_FILE'])
+
     Contains following attributes:
     Attributes
     ----------
