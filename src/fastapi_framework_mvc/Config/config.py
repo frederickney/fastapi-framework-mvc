@@ -4,10 +4,8 @@
 __author__ = 'Frederick NEY'
 
 import logging
-
 from fastapi_framework_mvc import Exceptions
 from . import yaml
-
 
 def _load(file, loader):
     """
@@ -36,34 +34,34 @@ def load_file(file, loader = yaml):
     return conf
 
 
-class Services(object):
-
-    def __init__(self, name, registry):
-        self.name = name,
-        self.registry = registry
-
-
 class Environment(object):
     """
     Class Environment act as a singleton where after loaded all
     the content of the attributes is available at any part of the project.
     Contains following attributes:
-     - Databases: All databases related configuration for sqlalchemy database engines.
-     It uses the DATABASES field within the yaml configuration file.
-     - SERVER: Deployment setup for the framework.
-     It uses the SERVER field within the yaml configuration file.
-     - FASTAPI: Setup conf for fastapi.
-     It uses the FASTAPI field within the yaml configuration file.
-     - Logins: All logins method related configuration for user authentications.
-     It uses the LOGINS field within the yaml configuration file.
-     - Services: All other configuration setup.
-     It uses the SERVICES field within the yaml configuration file.
+    Attributes
+    ----------
+
+    SERVER:
+        It uses the SERVER field within the yaml configuration file.
+    FASTAPI:
+        Setup conf for fastapi.
+        It uses the FASTAPI field within the yaml configuration file.
+    Databases:
+        All databases related configuration for sqlalchemy database engines.
+        It uses the DATABASES field within the yaml configuration file.
+    Logins:
+        All logins method related configuration for user authentications.
+        It uses the LOGINS field within the yaml configuration file.
+    Services:
+        All other configuration setup.
+        It uses the SERVICES field within the yaml configuration file.
     """
-    Databases = {}
     SERVER = {}
+    FASTAPI = {}
+    Databases = {}
     Logins = {}
     Services = {}
-    FASTAPI = {}
     __default_runtime_change = False
 
     @staticmethod
