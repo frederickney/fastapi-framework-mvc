@@ -6,19 +6,33 @@ __author__ = 'Frederick NEY'
 import logging
 
 from fastapi_framework_mvc import Exceptions
-
-
-def _load_yaml_file():
-    return
+from . import yaml
 
 
 def _load(file, loader):
+    """
+    Load file for the framework's configuration
+    :param file: path to file to load
+    :type file: str
+    :param loader: file handler that has a load method in it
+    :type loader: yaml
+    :return: loaded file in the format the loader returns
+    :rtype: any
+    """
     return loader.load(file)
 
 
-def load_file(file):
-    from . import yaml
-    conf = _load(file, yaml)
+def load_file(file, loader = yaml):
+    """
+    Load
+    :param file: path to file to load
+    :type file: str
+    :param loader: (Optional default: yaml) File handler that has a load method in it
+    :type loader: yaml
+    :return: loaded file in the format the loader returns
+    :rtype: any
+    """
+    conf = _load(file, loader)
     return conf
 
 
@@ -39,10 +53,22 @@ class Environment(object):
 
     @staticmethod
     def _load(file, loader):
+        """
+        Load config file using a specific file handler
+        :param file: path to file to load
+        :type file: str
+        :param loader:
+        :type loader: yaml
+        """
         return loader.load(file)
 
     @classmethod
     def reload(cls, file):
+        """
+        Triggered on uvicorn reload or fastapi reload on debug
+        :param file: path to file to load
+        :type file: str
+        """
         from . import yaml
         conf = cls._load(file, yaml)
         cls.load_runtime(conf)
@@ -52,7 +78,10 @@ class Environment(object):
 
     @classmethod
     def load(cls, file):
-        from . import yaml
+        """
+        Load configuration file. and fulfills class's attributes for handling them anywhere on the code.
+        :param file: path to file to load
+        """
         conf = cls._load(file, yaml)
         cls.load_runtime(conf)
         cls.load_databases(conf)
@@ -63,6 +92,11 @@ class Environment(object):
 
     @classmethod
     def load_databases(cls, conf):
+        """
+        Load database configurations into Databases class's attribute
+        :param conf: dictionary with all the content of the config file
+        :type conf: dict[str, dict]
+        """
         try:
             for type in conf["DATABASES"]:
                 if type != 'default':
@@ -74,6 +108,15 @@ class Environment(object):
 
     @classmethod
     def add_database(cls, db_type, db_conf):
+        """
+        Add database configuration within Databases class's attribute
+        :param db_type: database type
+        :type db_type: str
+        :param db_conf: database configuration
+        :type db_conf: dict[str, dict|str|int]
+        :raises fastapi_framework_mvc.Exceptions.RuntimeExceptions.DatabaseChangeException:
+        if the database is already loaded within Databases class's attribute
+        """
         db = cls.Databases.get(db_type, None)
         if db is None:
             cls.Databases[db_type] = db_conf
@@ -85,6 +128,15 @@ class Environment(object):
 
     @classmethod
     def set_default_database(cls, db_conf):
+        """
+        Add default database configuration within Databases class's attribute
+        :param db_type: database type
+        :type db_type: str
+        :param db_conf: database configuration
+        :type db_conf: dict[str, dict|str|int]
+        :raises fastapi_framework_mvc.Exceptions.RuntimeExceptions.DatabaseChangeException:
+        if the default database is already loaded within Databases class's attribute
+        """
         db = cls.Databases.get('default', None)
         if db is None and cls.__default_runtime_change is False:
             cls.Databases['default'] = db_conf
@@ -98,10 +150,22 @@ class Environment(object):
 
     @classmethod
     def load_logins(cls, conf):
+        """
+        Load logins configurations into Logins class's attribute
+        :param conf: dictionary with all the content of the config file
+        :type conf: dict[str, dict]
+        """
         cls.Logins = conf['LOGINS'] if 'LOGINS' in conf else cls.Logins
 
     @classmethod
     def add_login(cls, login_name, login_conf):
+        """
+        Add logins configurations into Logins class's attribute
+        :param login_name: Login identifier
+        :type login_name: str
+        :param login_conf: login configuration
+        :type login_conf: dict[str, dict|str|int]
+        """
         login = cls.Logins.get(login_name, None)
         if login is None:
             cls.Logins[login_name] = login_conf
@@ -113,14 +177,31 @@ class Environment(object):
 
     @classmethod
     def load_runtime(cls, conf):
+        """
+        Load deployment setup configurations into SERVER class's attribute
+        :param conf: dictionary with all the content of the config file
+        :type conf: dict[str, dict]
+        """
         cls.SERVER = conf['SERVER']
 
     @classmethod
     def load_services(cls, conf):
+        """
+        Load other attributes configurations into Services class's attribute
+        :param conf: dictionary with all the content of the config file
+        :type conf: dict[str, dict]
+        """
         cls.Services.update(conf['SERVICES'] if 'SERVICES' in conf else cls.Services)
 
     @classmethod
     def add_service(cls, service_name, service_conf):
+        """
+        Add other attributes configurations into Services class's attribute
+        :param service_name: service identifier
+        :type service_name: str
+        :param service_conf: service configuration
+        :type service_conf: dict[str, dict|str|int]
+        """
         service = cls.Services.get(service_name, None)
         if service is None:
             cls.Services[service_name] = service_conf
