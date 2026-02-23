@@ -30,6 +30,46 @@ from fastapi_framework_mvc.Config import Environment
 
 
 class Driver(object):
+    """
+    Class Driver act as a singleton where after loaded all
+    the content of the attributes is available at any part of the project.
+
+    Requires fastapi_fastapi_framework_mvc.Config.Environment to be loaded first.
+
+    >>> import os
+    >>> Environment.load(os.environ['CONFIG_FILE'])
+    >>> Driver.register_engines()
+    >>> Driver.init()
+
+    Contains following attributes:
+    Attributes
+    ----------
+
+    engine: sqlalchemy.engine.Engine
+        Defaut database engine, usable if default is set within:
+
+        >>> Environment.Databases
+    session: sqlalchemy.orm.session.Session
+        Default database session, usable if default is set within:
+
+        >>> Environment.Databases
+    Model:
+        Default database Model class, usable if default is set within:
+
+        >>> Environment.Databases
+    engines: dict[str, sqlalchemy.engine.Engine]
+        registered database engines. Contains all keys from:
+
+        >>> Environment.Databases
+    sessions: dict[str, sqlalchemy.orm.session.Session]
+        registered database sessions. Contains all keys from:
+
+        >>> Environment.Databases
+    models: dict[str, sqlalchemy.orm.declarative.DeclarativeBase]
+        registered database models. Contains all keys from:
+
+        >>> Environment.Databases
+    """
     engine: Engine = None
     session: scoped_session = None
     Model: registry = None
@@ -42,6 +82,15 @@ class Driver(object):
 
     @staticmethod
     def _params(args={}, separator=';'):
+        """
+        Prepares database parameters that is set within database's connection url
+        :param args:
+        :type args: dict[str, str|int|bool]
+        :param separator:
+        :type separator: str
+        :return: url formated parameters
+        :rtype: str
+        """
         array_args = list(args.items())
         params = str()
         for i in range(0, len(array_args)):
@@ -56,14 +105,27 @@ class Driver(object):
             driver, user, pwd, host, db, port=None, echo=False, params=None, dialects=None, **kwargs
     ):
         """
-        Setup function that will configure all the required resources for communicating with the database
+        Setup function that will configure all the required resources for communicating with the default database
         :param driver: Database driver that will be used when the server need to store persistent data
+        :type driver: str
         :param user: Database user
+        :type user: str | None
         :param pwd: Database password
+        :type pwd: str | None
         :param host: Database host
+        :type host: str
         :param db: Database schema
+        :type db: str
+        :param port: Database port
+        :type port: int | None
+        :param params: Database parameters
+        :type params: dict[str, str | int | bool]
+        :param dialects: Database dialects
+        :type dialects: dict[str, Any]
         :param echo: Boolean for printing sql request default: false
-        :return: N/A
+        :type echo: bool
+        :param kwargs: sqlalchemy.create_engine keyword arguments
+        :type kwargs: dict[str, Any]
         """
         if dialects is not None:
             for name, values in dialects.items():
@@ -88,6 +150,31 @@ class Driver(object):
             cls,
             name, driver, user, pwd, host, db, port=None, params=None, dialects=None, echo=True, **kwargs
     ):
+        """
+        Setup function that will configure all the required resources for communicating with the database.
+        :param name: Database configuration name
+        :type name: str
+        :param driver: Database driver that will be used when the server need to store persistent data
+        :type driver: str
+        :param user: Database user
+        :type user: str | None
+        :param pwd: Database password
+        :type pwd: str | None
+        :param host: Database host
+        :type host: str
+        :param db: Database schema
+        :type db: str
+        :param port: Database port
+        :type port: int | None
+        :param params: Database parameters
+        :type params: dict[str, str | int | bool]
+        :param dialects: Database dialects
+        :type dialects: dict[str, Any]
+        :param echo: Boolean for printing sql request default: false
+        :type echo: bool
+        :param kwargs: sqlalchemy.create_engine keyword arguments
+        :type kwargs: dict[str, Any]
+        """
         if dialects is not None:
             for registry_name, values in dialects.items():
                 registry.register(registry_name, values['module'], values['class'])
@@ -108,6 +195,13 @@ class Driver(object):
 
     @classmethod
     def get_session_by_name(cls, name):
+        """
+        Get a session by name
+        :param name: Database configuration name
+        :type name: str
+        :return: Session
+        :rtype: sqlalchemy.orm.session.Session
+        """
         if name in cls.sessions:
             return cls.sessions[name]
         return None
@@ -118,18 +212,34 @@ class Driver(object):
 
     @classmethod
     def get_engine_by_name(cls, name):
+        """
+        Get sqlalchemy engine by name
+        :param name: Database configuration name
+        :type name: str
+        :return: Engine
+        :rtype: sqlalchemy.engine.Engine
+        """
         if name in cls.engines:
             return cls.engines[name]
         return None
 
     @classmethod
     def get_model_by_name(cls, name):
+        """
+        Get sqlalchemy model by name
+        :param name: Database configuration name
+        :type name: str
+        :return: sqlalchemy.orm.declarative.DeclarativeBase
+        """
         if name in cls.models:
             return cls.models[name]
         return None
 
     @classmethod
     def register_engines(cls, echo=False):
+        """
+        Register databases engines
+        """
         for driver, config in Environment.Databases.items():
             logging.info("{}: setting database {}".format(__name__, driver))
             engines_params = {}
