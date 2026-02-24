@@ -130,8 +130,11 @@ class Driver(object):
         if dialects is not None:
             for name, values in dialects.items():
                 registry.register(name, values['module'], values['class'])
+        # Determining the escape character before parameters and after database url
         _url_param_separator = '?' if kwargs is None else kwargs.pop('url_param_separator', '?')
+        # Determining the escape character in between parameters
         _params_separator = '&' if kwargs is None else kwargs.pop('params_separator', '&')
+        # Setting up sqlalchemy database url connection
         database_uri = (
                 "{}://{}{}:{}/{}".format(driver, "{}:{}@".format(user, pwd) if user is not None else "", host, port, db)
                 + ('{}{}'.format(_url_param_separator, cls._params(params, _params_separator)) if params is not None else '')
@@ -139,9 +142,13 @@ class Driver(object):
                 "{}://{}{}/{}".format(driver, "{}:{}@".format(user, pwd) if user is not None else "", host, db)
                 + ('{}{}'.format(_url_param_separator, cls._params(params, _params_separator)) if params is not None else '')
         )
+        # creates database connection
         cls.engine = create_engine(database_uri, echo=echo, **kwargs)
+        # prepares database session
         cls._sessionmaker = sessionmaker(bind=cls.engine, autoflush=True)
+        # creates database session
         cls.session = scoped_session(cls._sessionmaker)
+        # creates Model base object
         cls.Model = declarative_base()
         cls.Model.query = cls.session.query_property()
 
@@ -178,8 +185,11 @@ class Driver(object):
         if dialects is not None:
             for registry_name, values in dialects.items():
                 registry.register(registry_name, values['module'], values['class'])
+        # Determining the escape character before parameters and after database url
         _url_param_separator = '?' if kwargs is None else kwargs.pop('url_param_separator', '?')
+        # Determining the escape character in between parameters
         _params_separator = '&' if kwargs is None else kwargs.pop('params_separator', '&')
+        # Setting up sqlalchemy database url connection
         database_uri = (
                 "{}://{}{}:{}/{}".format(driver, "{}:{}@".format(user, pwd) if user is not None else "", host, port, db)
                 + ('{}{}'.format(_url_param_separator, cls._params(params, _params_separator)) if params is not None else '')
@@ -187,9 +197,13 @@ class Driver(object):
                 "{}://{}{}/{}".format(driver, "{}:{}@".format(user, pwd) if user is not None else "", host, db)
                 + ('{}{}'.format(_url_param_separator, cls._params(params, _params_separator)) if params is not None else '')
         )
+        # creates database connection
         cls.engines[name] = create_engine(database_uri, echo=echo, **kwargs)
+        # prepares database session
         cls._sessionmakers[name] = sessionmaker(bind=cls.engines[name], autoflush=False)
+        # creates database session
         cls.sessions[name] = scoped_session(cls._sessionmakers[name])
+        # creates Model base object
         cls.models[name] = declarative_base()
         cls.models[name].query = cls.sessions[name].query_property()
 
@@ -281,10 +295,16 @@ class Driver(object):
 
     @classmethod
     def close_session(cls, name):
+        """
+        Close a database session by name
+        """
         cls.sessions[name].close()
 
     @classmethod
     def close_default_session(cls):
+        """
+        Close default database session
+        """
         cls.session.close()
 
     @classmethod
@@ -299,11 +319,17 @@ class Driver(object):
 
     @classmethod
     def init_default_db(cls):
+        """
+        Initialize default database models and registers models stored onto module
+        models.persistent
+        """
         try:
+            # needs to be loaded after the database registration otherwise will raise NameError exception
             import models.persistent
         except ImportError as e:
             logging.debug("{}: {}".format(__name__, e))
             try:
+                # needs to be loaded after the database registration otherwise will raise NameError exception
                 import Models.Persistent
             except ImportError as e:
                 logging.debug("{}: {}".format(__name__, e))
@@ -314,11 +340,17 @@ class Driver(object):
 
     @classmethod
     def init_db(cls, name):
+        """
+        Initialize database models and registers models stored onto module
+        models.persistent
+        """
         try:
+            # needs to be loaded after the database registration otherwise will raise NameError exception
             import models.persistent
         except ImportError as e:
             logging.debug("{}: {}".format(__name__, e))
             try:
+                # needs to be loaded after the database registration otherwise will raise NameError exception
                 import Models.Persistent
             except ImportError as e:
                 logging.debug("{}: {}".format(__name__, e))
@@ -331,8 +363,8 @@ class Driver(object):
     @classmethod
     def init(cls):
         """
-        Function that create schema tables based on imported models within this function
-        :return: N/A
+        Function that create schema tables based on imported models within this function.
+        needs to be called after Driver.register_engines()
         """
         for driver, conf in Environment.Databases.items():
             logging.info("{}: looking for models into {} for database {}".format(
@@ -348,17 +380,26 @@ class Driver(object):
 
     @classmethod
     def disconnect(cls, engine, session):
+        """
+        Function that disconnect safely database
+        """
         session.close()
         engine.dispose()
 
     @classmethod
     def disconnect_all(cls):
+        """
+        Function that disconnect safely all databases
+        """
         for name, engine in cls.engines.items():
             cls.disconnect(engine, cls.sessions[name])
         cls.disconnect(cls.engine, cls.session)
 
     @classmethod
     def reconnect_all(cls):
+        """
+        Function that reconnect safely all databases by disconnecting them and reconnecting them
+        """
         cls.disconnect_all()
         cls.register_engines()
 
