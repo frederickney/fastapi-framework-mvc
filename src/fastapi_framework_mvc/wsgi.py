@@ -63,10 +63,16 @@ class Server(gunicorn.app.base.Application):
 
     @staticmethod
     def number_of_workers():
+        """
+        Return the number of worker processes. Based on th cpu count times 2
+        """
         return multiprocessing.cpu_count() * 2
 
     @staticmethod
     def application():
+        """
+        Loading framework with gunicorn
+        """
         from fastapi_framework_mvc.Server import Process
         logging.info("Initializing the server...")
         Process.init(tracking_mode=False)
@@ -84,6 +90,9 @@ class Server(gunicorn.app.base.Application):
         return Process.wsgi_setup()
 
     def __init__(self, options=None):
+        """
+        Initialize the server using gunicorn
+        """
         Server.options = (options or {}) if not hasattr(Server, 'options') else Server.options
         self.application = Server.application()
         super(Server, self).__init__()
@@ -105,6 +114,9 @@ class Server(gunicorn.app.base.Application):
         super(Server, self).reload()
 
     def load_config(self):
+        """
+        Load gunicorn options
+        """
         logging.info(Server.options)
         config = dict([(key, value) for key, value in iteritems(Server.options)
                        if key in self.cfg.settings and value is not None])
@@ -112,6 +124,9 @@ class Server(gunicorn.app.base.Application):
             self.cfg.set(key.lower(), value)
 
     def load(self):
+        """
+        Load app for gunicorn
+        """
         try:
             import eventlet
             eventlet.monkey_patch(all=True)
@@ -126,6 +141,9 @@ class Server(gunicorn.app.base.Application):
 
     @classmethod
     def load_options(cls):
+        """
+        Sets gunicorn options
+        """
         cls.options = {
             'bind': '%s:%i' % (Environment.SERVER['BIND']['ADDRESS'], int(Environment.SERVER['BIND']['PORT'])),
             'workers': Server.number_of_workers(),
@@ -144,6 +162,9 @@ class Server(gunicorn.app.base.Application):
 
 
 def main(args: argparse.ArgumentParser):
+    """
+    main entry point for fastapi_framework_mvc.wsgi
+    """
     if not args.disable_log_files:
         if os.environ.get("LOG_DIR", None):
             os.environ.setdefault("log_dir", os.environ.get("LOG_DIR", "/var/log/server/"))
