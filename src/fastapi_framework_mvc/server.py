@@ -39,6 +39,9 @@ def args_parser():
 
 
 def main():
+    """
+    main entry point for fastapi_framework_mvc server
+    """
     args = args_parser()
     os.environ.setdefault("log_file", os.environ.get("LOG_FILE", "log/process.log"))
     if not os.path.exists(os.path.dirname(os.environ.get('log_file'))):
