@@ -11,12 +11,13 @@ from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
+
 from . import WS, Web, ErrorHandler, Middleware, Socket, Plugins
 
 
 def configure_logs(name, format, output_file, debug='info'):
     """
-
+    Setup logging configuration, logging handler, logging formatting, ...
     :param name:
     :type name: str
     :param format:
@@ -38,6 +39,27 @@ def configure_logs(name, format, output_file, debug='info'):
 
 
 class Process(object):
+    """
+    Core class ot the framework, handles all fastapi configuration / registration
+
+    Contains following attributes:
+    Attributes
+    ----------
+        templates: Jinja2Templates
+            For templates handling in fastapi.APIRouter.route decorator, server.add_route method or
+            fastapi.APIRouter.route decorator
+        openid: FastAPIOIDC
+            for handling user authentication both in swagger and endpoints uses fastapi_oidc.FastAPIOIDC
+        _csrf:
+            deprecated
+        sso:
+            deprecated
+        ldap:
+            deprecated
+        saml:
+            deprecated
+    """
+
     _app: FastAPI = None
     _pidfile = "/run/fastapi.pid"
     _login_manager = None
@@ -51,7 +73,7 @@ class Process(object):
     @classmethod
     def init(cls, tracking_mode=False):
         """
-
+        Initialise the framework and creates fastapi instances with others plugins based on configuration
         :param tracking_mode:
         :type tracking_mode: bool
         :return:
@@ -83,6 +105,9 @@ class Process(object):
 
     @classmethod
     def _load_statics(cls):
+        """
+        Load static files from static folder to /statics url
+        """
         from fastapi_framework_mvc.Config import Environment
         cls._app.mount(
             '/statics' if 'STATIC_URL' not in Environment.SERVER else Environment.SERVER['STATIC_URL'],
@@ -92,6 +117,10 @@ class Process(object):
     
     @classmethod
     def _load_templates(cls):
+        """
+        Load templates from templates folder to be able to use them in fastapi.APIRouter.route decorator,
+        server.add_route method or fastapi.APIRouter.route decorator
+        """
         from fastapi_framework_mvc.Config import Environment
         cls.templates = Jinja2Templates(directory=Environment.SERVER['TEMPLATE_PATH'])
 
@@ -106,8 +135,10 @@ class Process(object):
     @classmethod
     def start(cls, args):
         """
-
-        :param args:
+        Start fastapi application using uvicorn. This method is blocking and is the main process.
+        Can be stopped using keyboard signals
+        :param args: needs arguments listening_address (nullable), listening_port (required) and pid (nullable)
+        :type args: argparse.Namespace
         :return:
         """
         cls._args = args
@@ -185,6 +216,10 @@ class Process(object):
 
     @classmethod
     def load_plugins(cls):
+        """
+        Part that enable plugin to be loaded on working directory where the framework is called.
+        Provides Process._app attribute to plugins as argument.
+        """
         Plugins.Load(
             server=cls._app,
         )
@@ -192,8 +227,8 @@ class Process(object):
     @classmethod
     def load_routes(cls):
         """
-
-        :return:
+        Part that loads all endpoints / routes in working directory where the framework is called.
+        Provides Process._app attribute to plugins as argument.
         """
         WS.Route(cls._app)
         Web.Route(cls._app)
@@ -202,24 +237,23 @@ class Process(object):
     @classmethod
     def load_middleware(cls):
         """
-
-        :return:
+        Part that enable middlewares to be loaded on working directory where the framework is called.
+        Provides Process._app attribute to plugins as argument.
         """
         Middleware.Load(cls._app)
 
     @classmethod
     def load_socket_events(cls):
         """
-
-        :return:
+        Part that loads all websocket events in working directory where the framework is called.
+        Provides Process._app attribute to plugins as argument.
         """
         Socket.Load(cls._app)
 
     @classmethod
     def pid(cls):
         """
-
-        :return:
+        Creates a pid file for the current process.
         """
         import os
         import sys
@@ -234,8 +268,7 @@ class Process(object):
     @classmethod
     def shutdown(cls):
         """
-
-        :return:
+        Removes the pid file.
         """
         import os
         os.unlink(cls._pidfile)
@@ -243,7 +276,7 @@ class Process(object):
     @classmethod
     def get(cls):
         """
-
+        Returns the current running fastapi instance
         :return:
         :rtype: fastapi.FastAPI
         """
@@ -252,7 +285,7 @@ class Process(object):
     @classmethod
     def stop(cls, code=0):
         """
-
+        Shutdown the current process.
         :param code:
         :type: int
         :return:

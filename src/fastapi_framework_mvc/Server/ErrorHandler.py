@@ -11,10 +11,13 @@ class Route(object):
 
     def __init__(self, srv):
         """
-        Constructor
-        :param srv: FastAPI server
+        Main entrypoint to load errors routes from working directory.
+        Looks for server or Server module within working directory for any errorhandler or ErrorHandler file containing
+        a Route class or method inside.
+        :param srv: FastAPI instance
         :type srv: fastapi.FastAPI
         :return: Route object
+        :rtype: Route
         """
         import logging
         import fastapi_framework_mvc.Controllers as Controllers

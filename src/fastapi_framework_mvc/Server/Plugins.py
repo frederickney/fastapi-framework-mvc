@@ -5,12 +5,19 @@ __author__ = 'Frederick NEY'
 
 
 class Load(object):
-
+    """
+    Class that will load plugins from working directory from where
+    the fastapi_framework_mvc package is called.
+    """
     def __init__(cls, **kwargs):
         """
-
-        :param server:
-        :type server: flask.Flask
+        Main entrypoint to load plugins from working directory.
+        Looks for server or Server module within working directory for any plugins or Plugins file containing
+        a Load class or method inside.
+        :param srv: FastAPI instance
+        :type server: fastapi.FastAPI
+        :return: Load object
+        :rtype: Load
         """
         import logging
         try:

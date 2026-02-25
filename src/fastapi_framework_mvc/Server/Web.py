@@ -6,15 +6,18 @@ __author__ = 'Frederick NEY'
 
 class Route(object):
     """
-    Class that will configure all web based routes for the server
+    Class that will configure all web based routes for the server.
     """
 
     def __init__(self, srv):
         """
-        Constructor
-        :param srv: FastAPI server
+        Main entrypoint to load http routes rendering ui from working directory.
+        Looks for server or Server module within working directory for any web or Web file containing
+        a Route class or method inside.
+        :param srv: FastAPI instance
         :type srv: fastapi.FastAPI
         :return: Route object
+        :rtype: Route
         """
         import logging
         try:

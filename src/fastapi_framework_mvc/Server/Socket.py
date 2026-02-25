@@ -5,13 +5,19 @@ __author__ = 'Frederick NEY'
 
 
 class Load(object):
-
+    """
+    Class that will load websocket events from working directory from where
+    the fastapi_framework_mvc package is called.
+    """
     def __init__(self, socketio):
         """
-
-        :param socketio:
+        Main entrypoint to load plugins from working directory.
+        Looks for server or Server module within working directory for any socket or Socket file containing
+        a Handle class or method inside.
+        :param socketio: FastAPI instance
         :type socketio: fastapi.FastAPI
         :return: Handler object
+        :rtype: Load
         """
         import logging
         try:
