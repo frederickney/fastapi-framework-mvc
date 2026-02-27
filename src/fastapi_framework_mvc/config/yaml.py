@@ -6,7 +6,7 @@ __author__ = 'Frederick NEY'
 import os
 import re
 
-import fastapi_framework_mvc.Exceptions as Exceptions
+import fastapi_framework_mvc.exceptions as exceptions
 
 __env_matcher = re.compile(r'\$\{([^}^{]+)\}')
 
@@ -56,15 +56,15 @@ def _load(file):
                         return content
                     except yaml.YAMLError as e:
                         fd.close()
-                        raise Exceptions.ConfigExceptions.InvalidConfigurationFileError(file + ": Invalid YAML format.")
+                        raise exceptions.config.InvalidConfigurationFileError(file + ": Invalid YAML format.")
                 except Exception as e:
-                    raise Exceptions.ConfigExceptions.InvalidConfigurationFileError(file + ": File did not exist.")
+                    raise exceptions.config.InvalidConfigurationFileError(file + ": File did not exist.")
             else:
-                raise Exceptions.ConfigExceptions.NotAConfigurationFileError(file + ": Not a valid file.")
+                raise exceptions.config.NotAConfigurationFileError(file + ": Not a valid file.")
         else:
-            raise Exceptions.ConfigExceptions.NotAConfigurationFileError(file + ": File did not exist.")
+            raise exceptions.config.NotAConfigurationFileError(file + ": File did not exist.")
     else:
-        raise Exceptions.ConfigExceptions.NotAConfigurationFileError(
+        raise exceptions.config.NotAConfigurationFileError(
             "Expected " + type(str) + ", got " + type(file) + "."
         )
     return

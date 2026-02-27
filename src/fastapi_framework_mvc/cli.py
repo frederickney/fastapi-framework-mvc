@@ -6,7 +6,7 @@ __author__ = 'Frederick NEY'
 
 import os
 
-from fastapi_framework_mvc.Utils import make_controller, make_middleware, make_project
+from fastapi_framework_mvc.utils import make_controller, make_middleware, make_project
 
 
 def parser():

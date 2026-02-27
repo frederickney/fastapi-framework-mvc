@@ -1,12 +1,15 @@
 # coding: utf-8
 
-import functools
-import warnings
-from datetime import datetime, timedelta
-
 from fastapi import FastAPI
-from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+
+from . import errors
+from . import middleware
+from . import plugins
+from . import socket
+from . import web
+from . import ws
 
 
 class Process(object):
@@ -190,7 +193,7 @@ class Process(object):
         Part that enable plugin to be loaded on working directory where the framework is called.
         Provides Process._app attribute to plugins as argument.
         """
-        Plugins.Load(
+        plugins.Load(
             server=cls._app,
         )
 
@@ -200,9 +203,9 @@ class Process(object):
         Part that loads all endpoints / routes in working directory where the framework is called.
         Provides Process._app attribute to plugins as argument.
         """
-        WS.Route(cls._app)
-        Web.Route(cls._app)
-        ErrorHandler.Route(cls._app)
+        ws.Route(cls._app)
+        web.Route(cls._app)
+        errors.Route(cls._app)
 
     @classmethod
     def load_middleware(cls):
@@ -210,7 +213,7 @@ class Process(object):
         Part that enable middlewares to be loaded on working directory where the framework is called.
         Provides Process._app attribute to plugins as argument.
         """
-        Middleware.Load(cls._app)
+        middleware.Load(cls._app)
 
     @classmethod
     def load_socket_events(cls):
@@ -218,7 +221,7 @@ class Process(object):
         Part that loads all websocket events in working directory where the framework is called.
         Provides Process._app attribute to plugins as argument.
         """
-        Socket.Load(cls._app)
+        socket.Load(cls._app)
 
     @classmethod
     def pid(cls):
@@ -285,5 +288,3 @@ class Process(object):
             except ImportError:
                 pass
         return cls._login_manager
-
-

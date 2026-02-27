@@ -4,6 +4,6 @@
 __author__ = 'Frederick NEY'
 
 
-from . import WS, Web, ErrorHandler, Middleware, Socket, Plugins
+from . import ws, web, errors, middleware, socket, plugins
 from .core import Process
 from .logging import configure_logs

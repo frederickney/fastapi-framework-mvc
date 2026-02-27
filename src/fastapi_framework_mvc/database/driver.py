@@ -26,7 +26,7 @@ from sqlalchemy.dialects import registry
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from fastapi_framework_mvc.Config import Environment
+from fastapi_framework_mvc.config import Environment
 
 
 class Driver(object):

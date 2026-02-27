@@ -3,9 +3,9 @@
 import os
 import logging
 from logging.handlers import TimedRotatingFileHandler
-from fastapi_framework_mvc.Config import Environment
-from fastapi_framework_mvc.Server import Process
-from fastapi_framework_mvc.Database import Database
+from fastapi_framework_mvc.config import Environment
+from fastapi_framework_mvc.server import Process
+from fastapi_framework_mvc.database import Database
 
 import azure.functions as func
 

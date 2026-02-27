@@ -20,9 +20,9 @@ class Route(object):
         :rtype: Route
         """
         import logging
-        import fastapi_framework_mvc.Controllers as Controllers
-        srv.add_exception_handler(404, Controllers.Web.HTTP40XController.page_or_error404)
-        srv.add_exception_handler(500, Controllers.Web.HTTP50XController.error500)
+        import fastapi_framework_mvc.controllers as controllers
+        srv.add_exception_handler(404, controllers.web.default.errors.http_404)
+        srv.add_exception_handler(500, controllers.web.default.errors.http_500)
         try:
             import server
             server.errorhandler.Route(srv)

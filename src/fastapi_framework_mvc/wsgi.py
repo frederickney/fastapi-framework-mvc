@@ -26,10 +26,10 @@ from six import iteritems
 import os
 import logging
 from logging.handlers import TimedRotatingFileHandler
-import fastapi_framework_mvc.Server as Process
-from fastapi_framework_mvc.Config import Environment
+import fastapi_framework_mvc.server as Process
+from fastapi_framework_mvc.config import Environment
 
-from fastapi_framework_mvc.Database import Database
+from fastapi_framework_mvc.database import Database
 
 parser = argparse.ArgumentParser(description='Python FLASK USGI server')
 parser.add_argument(
@@ -73,7 +73,6 @@ class Server(gunicorn.app.base.Application):
         """
         Loading framework with gunicorn
         """
-        from fastapi_framework_mvc.Server import Process
         logging.info("Initializing the server...")
         Process.init(tracking_mode=False)
         logging.info("Server initialized...")

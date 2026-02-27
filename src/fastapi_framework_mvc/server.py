@@ -8,9 +8,9 @@ import os
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
-import fastapi_framework_mvc.Server as Server
-from fastapi_framework_mvc.Config import Environment
-from fastapi_framework_mvc.Database import Database
+import fastapi_framework_mvc.server as server
+from fastapi_framework_mvc.config import Environment
+from fastapi_framework_mvc.database import Database
 
 def args_parser():
     import argparse
@@ -106,19 +106,19 @@ def main():
         Database.register_engines(echo=Environment.SERVER['CAPTURE'])
         Database.init()
         logging.debug("Database(s) connected...")
-    Server.Process.init(tracking_mode=False)
+    server.Process.init(tracking_mode=False)
     logging.debug("Server initialized...")
-    Server.Process.load_plugins()
+    server.Process.load_plugins()
     logging.debug("Loading server routes...")
-    Server.Process.load_routes()
-    Server.Process.load_middleware()
+    server.Process.load_routes()
+    server.Process.load_middleware()
     logging.debug("Server routes loaded...")
     logging.debug("Loading websocket events")
-    Server.Process.load_socket_events()
+    server.Process.load_socket_events()
     logging.debug("Websocket events loaded...")
     # app.teardown_appcontext(Database.save)
     logging.info("Server is now starting...")
-    Server.Process.start(args)
+    server.Process.start(args)
 
 
 if __name__ == '__main__':

@@ -4,7 +4,7 @@
 __author__ = 'Frederick NEY'
 
 import logging
-from fastapi_framework_mvc import Exceptions
+from fastapi_framework_mvc import exceptions
 from . import yaml
 
 def _load(file, loader):
@@ -143,7 +143,7 @@ class Environment(object):
             cls.Databases[db_type] = db_conf
         elif db is not None:
             logging.warning("Database '{}' already set".format(db_type))
-            raise Exceptions.RuntimeExceptions.DatabaseChangeException(
+            raise exceptions.runtime.DatabaseChangeException(
                 "Not permitted to change database '{}'  while app is running".format(db_type)
             )
 
@@ -165,7 +165,7 @@ class Environment(object):
         elif db is not None:
             logging.warning("Default database already set")
         else:
-            raise Exceptions.RuntimeExceptions.DatabaseChangeException(
+            raise exceptions.runtime.DatabaseChangeException(
                 "Not permitted to change default database while app is running"
             )
 
@@ -192,7 +192,7 @@ class Environment(object):
             cls.Logins[login_name] = login_conf
         elif login is not None:
             logging.warning("Login service '{}' already set".format(login_name))
-            raise Exceptions.RuntimeExceptions.LoginChangeException(
+            raise exceptions.runtime.LoginChangeException(
                 "Not permitted to change login method '{}'  while app is running".format(login_name)
             )
 
