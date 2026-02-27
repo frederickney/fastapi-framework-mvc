@@ -5,6 +5,7 @@ __author__ = 'Frederick NEY'
 
 import logging
 import typing
+
 import sqlalchemy.orm.query
 import sqlalchemy.sql.selectable
 
@@ -136,11 +137,8 @@ class Driver(object):
         _params_separator = '&' if kwargs is None else kwargs.pop('params_separator', '&')
         # Setting up sqlalchemy database url connection
         database_uri = (
-                "{}://{}{}:{}/{}".format(driver, "{}:{}@".format(user, pwd) if user is not None else "", host, port, db)
-                + ('{}{}'.format(_url_param_separator, cls._params(params, _params_separator)) if params is not None else '')
-        ) if port else (
-                "{}://{}{}/{}".format(driver, "{}:{}@".format(user, pwd) if user is not None else "", host, db)
-                + ('{}{}'.format(_url_param_separator, cls._params(params, _params_separator)) if params is not None else '')
+            f"{driver}://{f"{user}:{pwd}@" if user and pwd else ""}{host}{f":{port}" if port else ""}/{db}"
+            + f"{_url_param_separator}{cls._params(params, _params_separator)}" if params is not None else ""
         )
         # creates database connection
         cls.engine = create_engine(database_uri, echo=echo, **kwargs)
@@ -191,11 +189,8 @@ class Driver(object):
         _params_separator = '&' if kwargs is None else kwargs.pop('params_separator', '&')
         # Setting up sqlalchemy database url connection
         database_uri = (
-                "{}://{}{}:{}/{}".format(driver, "{}:{}@".format(user, pwd) if user is not None else "", host, port, db)
-                + ('{}{}'.format(_url_param_separator, cls._params(params, _params_separator)) if params is not None else '')
-        ) if port else (
-                "{}://{}{}/{}".format(driver, "{}:{}@".format(user, pwd) if user is not None else "", host, db)
-                + ('{}{}'.format(_url_param_separator, cls._params(params, _params_separator)) if params is not None else '')
+            f"{driver}://{f"{user}:{pwd}@" if user and pwd else ""}{host}{f":{port}" if port else ""}/{db}"
+            + f"{_url_param_separator}{cls._params(params, _params_separator)}" if params is not None else ""
         )
         # creates database connection
         cls.engines[name] = create_engine(database_uri, echo=echo, **kwargs)
@@ -418,15 +413,15 @@ class Driver(object):
         try:
             if engine is None:
                 return pandas.read_sql(
-                    str(query.statement.compile(compile_kwargs={"literal_binds": True})) if type(query) is
-                        sqlalchemy.orm.query.Query else
+                    str(query.statement.compile(compile_kwargs={"literal_binds": True}))
+                    if type(query) is sqlalchemy.orm.query.Query else
                     str(query.compile(compile_kwargs={"literal_binds": True})),
                     cls.engine
                 )
             else:
                 return pandas.read_sql(
-                    str(query.statement.compile(compile_kwargs={"literal_binds": True})) if type(query) is
-                        sqlalchemy.orm.query.Query else
+                    str(query.statement.compile(compile_kwargs={"literal_binds": True}))
+                    if type(query) is sqlalchemy.orm.query.Query else
                     str(query.compile(compile_kwargs={"literal_binds": True})),
                     cls.engines[engine]
                 )
