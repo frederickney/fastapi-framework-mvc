@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from fastapi_framework_mvc.config import Environment
 from . import errors
 from . import middleware
 from . import plugins
@@ -38,7 +39,7 @@ class Process(object):
     _pidfile = "/run/fastapi.pid"
     _login_manager = None
     _csrf = None
-    temlates = None
+    templates = None
     sso = None
     openid = None
     ldap = None
@@ -56,7 +57,6 @@ class Process(object):
         import os.path
         import pathlib
         from fastapi import FastAPI
-        from fastapi_framework_mvc.Config import Environment
         cls._app = FastAPI()
         Environment.SERVER.setdefault(
             'STATIC_PATH',
@@ -82,7 +82,6 @@ class Process(object):
         """
         Load static files from static folder to /statics url
         """
-        from fastapi_framework_mvc.Config import Environment
         cls._app.mount(
             '/statics' if 'STATIC_URL' not in Environment.SERVER else Environment.SERVER['STATIC_URL'],
             StaticFiles(directory=Environment.SERVER['STATIC_PATH']),
@@ -95,7 +94,7 @@ class Process(object):
         Load templates from templates folder to be able to use them in fastapi.APIRouter.route decorator,
         server.add_route method or fastapi.APIRouter.route decorator
         """
-        from fastapi_framework_mvc.Config import Environment
+        from fastapi_framework_mvc.config import Environment
         cls.templates = Jinja2Templates(directory=Environment.SERVER['TEMPLATE_PATH'])
 
     @classmethod
@@ -117,7 +116,6 @@ class Process(object):
         """
         cls._args = args
         import uvicorn
-        from fastapi_framework_mvc.Config import Environment
         if args.listening_address is not None:
             # logger.info("Starting listening on " + args.listening_address + " on port " + args.listening_port)
             print("Starting listening on %s on port %d" % (args.listening_address, int(args.listening_port)))

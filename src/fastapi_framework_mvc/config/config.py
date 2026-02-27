@@ -4,8 +4,10 @@
 __author__ = 'Frederick NEY'
 
 import logging
+
 from fastapi_framework_mvc import exceptions
 from . import yaml
+
 
 def _load(file, loader):
     """
@@ -20,7 +22,7 @@ def _load(file, loader):
     return loader.load(file)
 
 
-def load_file(file, loader = yaml):
+def load_file(file, loader=yaml):
     """
     Load
     :param file: path to file to load

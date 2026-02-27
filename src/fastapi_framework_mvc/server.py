@@ -12,6 +12,7 @@ import fastapi_framework_mvc.server as server
 from fastapi_framework_mvc.config import Environment
 from fastapi_framework_mvc.database import Database
 
+
 def args_parser():
     import argparse
     parser = argparse.ArgumentParser(description='Python FLASK server')

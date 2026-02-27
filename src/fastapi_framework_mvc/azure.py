@@ -1,13 +1,14 @@
 # coding: utf-8
 
-import os
 import logging
+import os
 from logging.handlers import TimedRotatingFileHandler
-from fastapi_framework_mvc.config import Environment
-from fastapi_framework_mvc.server import Process
-from fastapi_framework_mvc.database import Database
 
 import azure.functions as func
+
+from fastapi_framework_mvc.config import Environment
+from fastapi_framework_mvc.database import Database
+from fastapi_framework_mvc.server import Process
 
 
 def AzureFunctionsApp():
@@ -90,4 +91,3 @@ def AzureFunctionsApp():
     logging.info("Options loaded...")
     logging.info("Returning wsgi application to Azure Function App...")
     return Process.wsgi_setup()
-

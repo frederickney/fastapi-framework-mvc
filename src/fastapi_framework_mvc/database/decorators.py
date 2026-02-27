@@ -3,8 +3,8 @@
 
 __author__ = 'Frederick NEY'
 
-import os
 import logging
+
 import sqlalchemy
 
 from .driver import Driver
@@ -33,6 +33,7 @@ def safe(func):
     :return: The result of the function
     :type func: any
     """
+
     def decorated(*args, **kwargs):
         """
         Retrieving functions arguments
@@ -45,7 +46,7 @@ def safe(func):
             return func(*args, **kwargs)
         except sqlalchemy.exc.PendingRollbackError as e:
             logging.warning(e)
-            _rollback() 
+            _rollback()
             return func(*args, **kwargs)
         except sqlalchemy.exc.OperationalError as e:
             logging.warning(e)

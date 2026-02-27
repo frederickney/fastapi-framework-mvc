@@ -9,6 +9,7 @@ class Load(object):
     Class that will load websocket events from working directory from where
     the fastapi_framework_mvc package is called.
     """
+
     def __init__(self, socketio):
         """
         Main entrypoint to load plugins from working directory.

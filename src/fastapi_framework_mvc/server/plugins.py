@@ -9,6 +9,7 @@ class Load(object):
     Class that will load plugins from working directory from where
     the fastapi_framework_mvc package is called.
     """
+
     def __init__(cls, **kwargs):
         """
         Main entrypoint to load plugins from working directory.

@@ -9,6 +9,7 @@ class Load(object):
     Class that will load middlewares from working directory from where
     the fastapi_framework_mvc package is called.
     """
+
     def __init__(self, srv):
         """
         Main entrypoint to load middlewares from working directory.

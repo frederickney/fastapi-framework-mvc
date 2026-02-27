@@ -1,16 +1,20 @@
 # coding: utf-8
 
-from pydantic import BaseModel
-from typing import Optional, Any
 from logging import WARNING
+from typing import Optional, Any
+
+from pydantic import BaseModel
+
 
 class _Bind(BaseModel):
     ADDRESS: str = '0.0.0.0'
     PORT: int = 8080
 
+
 class _Log(BaseModel):
     DIR: str
     LEVEL: str = WARNING
+
 
 class Server(BaseModel):
     ENV: str
@@ -19,6 +23,7 @@ class Server(BaseModel):
     CAPTURE: bool
     THREADS_PER_CORE: int
     LOG: _Log
+
 
 class Database(BaseModel):
     driver: str
@@ -30,6 +35,7 @@ class Database(BaseModel):
     params: dict[str, Any]
     dialects: dict[str, Any]
     readonly: bool
+
 
 class FastApiConf:
     CONF: dict[str, Any]

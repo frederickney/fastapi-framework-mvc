@@ -18,17 +18,16 @@ except ImportError as e:
     pass
 
 import argparse
+import logging
 import multiprocessing
+import os
+from logging.handlers import TimedRotatingFileHandler
 
 import gunicorn.app.base
 from six import iteritems
 
-import os
-import logging
-from logging.handlers import TimedRotatingFileHandler
 import fastapi_framework_mvc.server as Process
 from fastapi_framework_mvc.config import Environment
-
 from fastapi_framework_mvc.database import Database
 
 parser = argparse.ArgumentParser(description='Python FLASK USGI server')
@@ -38,7 +37,6 @@ parser.add_argument(
     required=False,
     help='Activate log verbosity mode'
 )
-
 
 
 class Logging():
@@ -246,4 +244,3 @@ def main(args: argparse.ArgumentParser):
 if __name__ == '__main__':
     args = parser.parse_args()
     main(args)
-
