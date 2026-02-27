@@ -399,7 +399,7 @@ class Driver(object):
         cls.register_engines()
 
     @classmethod
-    def to_pandas(cls, query: typing.Union[sqlalchemy.orm.query.Query, sqlalchemy.sql.selectable.Select], engine: str = None):
+    def to_pandas(cls, query: typing.Union[sqlalchemy.orm.query.Query, sqlalchemy.sql.selectable.Select], engine = None):
         """
         Convert SQLAlchemy query object into pandas Dataframe
         Experimental use at your own risk.
