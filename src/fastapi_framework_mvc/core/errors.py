@@ -33,5 +33,5 @@ class Route(object):
                 import Server
                 Server.ErrorHandler.Route(srv)
             except Exception as e:
-                logging.warning("{}: Fallback to default error handler as : {} in {}".format(__name__, e, os.getcwd()))
+                logging.warning("{}: Fallback to default error handler as: {} in {}".format(__name__, e, os.getcwd()))
         return

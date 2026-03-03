@@ -26,7 +26,7 @@ from logging.handlers import TimedRotatingFileHandler
 import gunicorn.app.base
 from six import iteritems
 
-import fastapi_framework_mvc.server as Process
+from fastapi_framework_mvc.core import Process
 from fastapi_framework_mvc.config import Environment
 from fastapi_framework_mvc.database import Database
 

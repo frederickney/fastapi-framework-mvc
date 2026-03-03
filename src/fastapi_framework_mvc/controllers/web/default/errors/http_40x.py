@@ -3,7 +3,7 @@
 
 __author__ = 'Frederick NEY'
 
-from fastapi_framework_mvc.server import Process
+from fastapi_framework_mvc.core import Process
 
 
 async def http_404(request, exc):

@@ -8,7 +8,7 @@ import azure.functions as func
 
 from fastapi_framework_mvc.config import Environment
 from fastapi_framework_mvc.database import Database
-from fastapi_framework_mvc.server import Process
+from fastapi_framework_mvc.core import Process
 
 
 def AzureFunctionsApp():

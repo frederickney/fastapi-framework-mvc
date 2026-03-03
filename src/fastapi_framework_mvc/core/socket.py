@@ -32,6 +32,5 @@ class Load(object):
                 Server.Socket.Handler(socketio)
             except Exception as ie:
                 import traceback
-                logging.warning("{}: Fallback to default controller as: {} in {}".format(__name__, ie, os.getcwd()))
-                import fastapi_framework_mvc.Controllers as Controller
+                logging.warning("{}: {} in {}".format(__name__, ie, os.getcwd()))
         return

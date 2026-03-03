@@ -130,7 +130,7 @@ class Process(object):
                     uvicorn.run(
                         cls._app,
                         host=args.listening_address,
-                        port=int(args.listening_port),
+                        port=int(args.listening_port)
                     )
                 finally:
                     if args.pid:
@@ -159,7 +159,7 @@ class Process(object):
                     uvicorn.run(
                         cls._app,
                         host="0.0.0.0",
-                        port=int(args.listening_port),
+                        port=int(args.listening_port)
                     )
                 finally:
                     if args.pid:

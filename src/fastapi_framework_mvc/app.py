@@ -7,7 +7,7 @@ __author__ = 'Frederick NEY'
 import logging
 import os
 
-import fastapi_framework_mvc.server as server
+import fastapi_framework_mvc.core as core
 from fastapi_framework_mvc.config import Environment
 from fastapi_framework_mvc.database import Database
 from fastapi_framework_mvc.utils import make_controller, make_middleware, make_project
@@ -65,20 +65,20 @@ logging.debug("Connecting to database(s)...")
 Database.register_engines(echo=Environment.SERVER['CAPTURE'])
 Database.init()
 logging.debug("Database(s) connected...")
-server.Process.init(tracking_mode=False)
+core.Process.init(tracking_mode=False)
 # Server.Process.init_sheduler()
 logging.debug("Server initialized...")
-server.Process.load_plugins()
+core.Process.load_plugins()
 logging.debug("Loading server routes...")
-server.Process.load_routes()
-server.Process.load_middleware()
+core.Process.load_routes()
+core.Process.load_middleware()
 logging.debug("Server routes loaded...")
 logging.debug("Loading websocket events")
-server.Process.load_socket_events()
+core.Process.load_socket_events()
 logging.debug("Websocket events loaded...")
 # app.teardown_appcontext(Database.save)
 logging.info("Server is now starting...")
-app = server.Process.get()
+app = core.Process.get()
 
 if __name__ == '__main__':
     parser()
