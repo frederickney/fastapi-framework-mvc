@@ -158,9 +158,9 @@ class Server(gunicorn.app.base.Application):
             cls.options["keyfile"] = Environment.SERVER['SSL']['PrivateKey']
 
 
-def main(args: argparse.ArgumentParser):
+def start(args: argparse.ArgumentParser):
     """
-    main entry point for fastapi_framework_mvc.wsgi
+    starts process
     """
     if not args.disable_log_files:
         if os.environ.get("LOG_DIR", None):
@@ -240,7 +240,13 @@ def main(args: argparse.ArgumentParser):
     except RuntimeError as e:
         exit(255)
 
+def main():
+    """"
+    main entrypoint for fastapi_framework_mvc.wsgi
+    """
+    args = parser.parse_args()
+    start(args)
+
 
 if __name__ == '__main__':
-    args = parser.parse_args()
-    main(args)
+    main()
