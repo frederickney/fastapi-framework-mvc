@@ -7,9 +7,11 @@ import functools
 import warnings
 from datetime import datetime, timedelta
 
+from warnings import deprecated
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi_framework_mvc.Deprecation import outdated
 
 
 from . import WS, Web, ErrorHandler, Middleware, Socket, Plugins
@@ -50,6 +52,8 @@ class Process(object):
             fastapi.APIRouter.route decorator
         openid: FastAPIOIDC
             for handling user authentication both in swagger and endpoints uses fastapi_oidc.FastAPIOIDC
+        _login_manager:
+            deprecated
         _csrf:
             deprecated
         sso:
@@ -64,7 +68,7 @@ class Process(object):
     _pidfile = "/run/fastapi.pid"
     _login_manager = None
     _csrf = None
-    temlates = None
+    templates = None
     sso = None
     openid = None
     ldap = None
@@ -295,6 +299,7 @@ class Process(object):
         exit(code)
 
     @classmethod
+    @outdated
     def login_manager(cls, login_manager=None):
         """
 
