@@ -302,7 +302,7 @@ class Process(object):
     @outdated
     def login_manager(cls, login_manager=None):
         """
-
+        outdated due to no fastapi support for a login manager.
         :param login_manager:
         :type login_manager: fastapi_login.LoginManager
         :return:
