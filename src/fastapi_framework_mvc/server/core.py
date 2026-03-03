@@ -1,10 +1,14 @@
 # coding: utf-8
 
+
+__author__ = 'Frederick NEY'
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from fastapi_framework_mvc.config import Environment
+from fastapi_framework_mvc.deprecation import outdated
 from . import errors
 from . import middleware
 from . import plugins
@@ -25,6 +29,8 @@ class Process(object):
             fastapi.APIRouter.route decorator
         openid: FastAPIOIDC
             for handling user authentication both in swagger and endpoints uses fastapi_oidc.FastAPIOIDC
+        _login_manager:
+            deprecated
         _csrf:
             deprecated
         sso:
@@ -94,7 +100,6 @@ class Process(object):
         Load templates from templates folder to be able to use them in fastapi.APIRouter.route decorator,
         server.add_route method or fastapi.APIRouter.route decorator
         """
-        from fastapi_framework_mvc.config import Environment
         cls.templates = Jinja2Templates(directory=Environment.SERVER['TEMPLATE_PATH'])
 
     @classmethod
@@ -266,9 +271,10 @@ class Process(object):
         exit(code)
 
     @classmethod
+    @outdated
     def login_manager(cls, login_manager=None):
         """
-
+        outdated due to no fastapi support for a login manager.
         :param login_manager:
         :type login_manager: fastapi_login.LoginManager
         :return:
