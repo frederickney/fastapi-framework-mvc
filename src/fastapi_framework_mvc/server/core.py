@@ -29,27 +29,12 @@ class Process(object):
             fastapi.APIRouter.route decorator
         openid: FastAPIOIDC
             for handling user authentication both in swagger and endpoints uses fastapi_oidc.FastAPIOIDC
-        _login_manager:
-            deprecated
-        _csrf:
-            deprecated
-        sso:
-            deprecated
-        ldap:
-            deprecated
-        saml:
-            deprecated
     """
 
     _app: FastAPI = None
     _pidfile = "/run/fastapi.pid"
-    _login_manager = None
-    _csrf = None
     templates = None
-    sso = None
     openid = None
-    ldap = None
-    saml = None
 
     @classmethod
     def init(cls, tracking_mode=False):
@@ -269,26 +254,3 @@ class Process(object):
         if cls._args.pid:
             cls.shutdown()
         exit(code)
-
-    @classmethod
-    @outdated
-    def login_manager(cls, login_manager=None):
-        """
-        outdated due to no fastapi support for a login manager.
-        :param login_manager:
-        :type login_manager: fastapi_login.LoginManager
-        :return:
-        :rtype: fastapi_login.LoginManager
-        """
-        if login_manager:
-            try:
-                from fastapi_login import LoginManager
-                if (
-                        not callable(login_manager)
-                        and isinstance(login_manager, object)
-                        and type(login_manager) is LoginManager
-                ):
-                    cls._login_manager = login_manager
-            except ImportError:
-                pass
-        return cls._login_manager
