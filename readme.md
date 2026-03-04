@@ -333,7 +333,7 @@ or
 python -m fastapi_framework_mvc.cli --create-project <your project>
 ```
 
-A project can also be packaged and later used by the framework in order to do so, you need to create a 
+A project can also be packaged and later used by the framework. In order to do so, you need to create a 
 __pyproject.toml__ that will build your project into a python package. Best practices ar to put the __pyproject.toml__ 
 in the parent directory of your created project.
 
