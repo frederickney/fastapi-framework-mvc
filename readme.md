@@ -351,9 +351,9 @@ python -m fastapi_framework_mvc.app
 ```
 see -h for usages
 
-# Launching
-
 ---
+
+# Launching
 
 * On every startup
 
