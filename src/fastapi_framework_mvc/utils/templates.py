@@ -126,9 +126,11 @@ HTTP_ERRORS = {
     500: 'controllers.web.errors.http_500'
 }
 
-FLASK_RENDERING_IMPORT = "from fastapi_framework_mvc.core import Process\nfrom fastapi.responses import HTMLResponse\n\n"
+FASTAPI_RENDERING_IMPORT = "from fastapi_framework_mvc.core import Process\nfrom fastapi.responses import HTMLResponse\n\n"
 
-FLASK_FRAMEWORK_BASE_CONF = """SERVER:
+FASTAPI_APP = "# coding: utf-8\n\nfrom fastapi_framework_mvc.app import app"
+
+FASTAPI_FRAMEWORK_BASE_CONF = """SERVER:
     ENV: dev
     BIND:
         ADDRESS: localhost

@@ -6,7 +6,7 @@ __author__ = "Frederick NEY"
 import os
 
 from . import templates
-from .module import generate, create_project, create_server
+from .module import generate, create_project, create_server, create_fastapi_entrypoint
 
 
 def make_auth():
@@ -45,3 +45,4 @@ def make_controller(basepath, controller):
 def make_project(basepath, project, inst_dir):
     create_project(basepath, project)
     create_server(project, os.path.join(basepath, project), inst_dir)
+    create_fastapi_entrypoint(os.path.join(basepath, project))

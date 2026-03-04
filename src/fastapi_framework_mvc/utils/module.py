@@ -100,7 +100,7 @@ def try_create_web_entry(path):
             generate(path, 'controllers/web/home')
             fp = open(os.path.join(path, '{}.py'.format('controllers/web/home')), 'w')
             fp.write(templates.PYTHON_FILE_HEAD)
-            fp.write(templates.FLASK_RENDERING_IMPORT)
+            fp.write(templates.FASTAPI_RENDERING_IMPORT)
             fp.write(templates.BASE_HOME_CONTROLLER.format('welcome'))
             fp.close()
             fp = open(
@@ -129,7 +129,7 @@ def try_create_error_controller(path):
                 content += templates.ERROR_ENTRY.format(code, error)
                 fp = open(os.path.join(path, '{}.py'.format(error.replace('.', '/'))), 'w')
                 fp.write(templates.PYTHON_FILE_HEAD)
-                fp.write(templates.FLASK_RENDERING_IMPORT)
+                fp.write(templates.FASTAPI_RENDERING_IMPORT)
                 fp.write(templates.BASE_ERROR.format(code, code))
                 fp.close()
                 fp = open(
@@ -159,9 +159,14 @@ def try_create_default_conf(path, project):
         os.mkdir(os.path.join(path, 'config'), 0o755)
     if not os.path.exists(os.path.join(os.path.join(path, 'config'), 'config.yml')):
         fp = open(os.path.join(os.path.join(path, 'config'), 'config.yml'), 'w')
-        fp.write(templates.FLASK_FRAMEWORK_BASE_CONF)
+        fp.write(templates.FASTAPI_FRAMEWORK_BASE_CONF)
         fp.close()
 
+def try_create_fastapi_entrypoint(path):
+    if not os.path.exists(os.path.join(path, 'app.py')):
+        fd = open(os.path.join(path, 'app.py'), 'w')
+        fd.write(templates.FASTAPI_APP)
+        fd.close()
 
 def try_create_socket_entry(path):
     if os.path.exists(os.path.join(path, 'server')):
@@ -189,3 +194,7 @@ def create_server(project, path, _inst_dir):
     try_create_web_entry(path)
     try_create_ws_entry(path)
     try_create_default_conf(path, project)
+
+
+def create_fastapi_entrypoint(path):
+    try_create_fastapi_entrypoint(path)
