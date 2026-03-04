@@ -5,11 +5,12 @@
 __author__ = 'Frederick NEY'
 
 import os
+import sys
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
-from fastapi_framework_mvc.core import Process
 from fastapi_framework_mvc.config import Environment
+from fastapi_framework_mvc.core import Process
 from fastapi_framework_mvc.database import Database
 
 
@@ -43,6 +44,8 @@ def main():
     """
     main entry point for fastapi_framework_mvc server
     """
+    if os.getcwd() not in sys.path:
+        sys.path.append(os.getcwd())
     args = args_parser()
     os.environ.setdefault("log_file", os.environ.get("LOG_FILE", "log/process.log"))
     if not os.path.exists(os.path.dirname(os.environ.get('log_file'))):

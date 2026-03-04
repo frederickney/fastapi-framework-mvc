@@ -21,14 +21,14 @@ import argparse
 import logging
 import multiprocessing
 import os
+import sys
 from logging.handlers import TimedRotatingFileHandler
 
 import gunicorn.app.base
-from six import iteritems
-
-from fastapi_framework_mvc.core import Process
 from fastapi_framework_mvc.config import Environment
+from fastapi_framework_mvc.core import Process
 from fastapi_framework_mvc.database import Database
+from six import iteritems
 
 parser = argparse.ArgumentParser(description='Python FLASK USGI server')
 parser.add_argument(
@@ -240,10 +240,13 @@ def start(args: argparse.ArgumentParser):
     except RuntimeError as e:
         exit(255)
 
+
 def main():
     """"
     main entrypoint for fastapi_framework_mvc.wsgi
     """
+    if os.getcwd() not in sys.path:
+        sys.path.append(os.getcwd())
     args = parser.parse_args()
     start(args)
 
