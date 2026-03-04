@@ -90,43 +90,58 @@ DATABASES:
 
 ## Creating server routes
 
-There are 3 files where you could register your flask server routes, You could find these file under the src/Server folder:
+There are 3 files where you could register your flask server routes, You could find these file under the src/server folder:
 
 * Errors:
 
-All the server http error code must be registered inside the __init__ method of the ErrorHandler.py file.
+All the server http error code must be registered inside the __init__ method of the errorhandler.py file.
 
 Example:
 ```python
-srv.add_exception_handler(500, Controllers.Web.HTTP50XController.error500)
+server.add_exception_handler(500, controllers.web.errors.http_500)
 ```
 
 * Web based http file routes:
 
-All the web based http routes must be registered inside the __init__ method of the Web.py file.
+All the web based http routes must be registered inside the __init__ method of the web.py file.
 
 Example:
 ```python
-server.add_route('/', Controllers.Web.HomeController.index, methods=['GET'], 'home')
+server.add_route(path='/', route=controllers.web.home.index, methods=["GET"], name='home')
+```
+
+
+Can also loads router:
+
+```python
+#controllers.ws.api.router needs to be a fastapi APIRouter instance
+server.include_router(controllers.web.router, prefix='/api/v1')
 ```
 
 * Rest api routes:
 
-All the Rest API based routes must be registered inside the __init__ method of the WS.py file.
+All the Rest API based routes must be registered inside the __init__ method of the ws.py file.
 
 
 Example:
 ```python
-server.add_api_route('/api/content/', Controllers.WS.ApiController.index, methods=['GET'], 'api.content')
+server.add_api_route('/api/content/', controller.ws.api.index, methods=['GET'], 'api.content')
+```
+
+Can also loads router:
+
+```python
+#controllers.ws.api.router needs to be a fastapi APIRouter instance
+server.include_router(controllers.ws.api.v1.router, prefix='/api/v1/')
 ```
 
 ## Creating controllers:
 
-In case of database used within controllers, you will need to use __@safe__ from __fastapi_framework_mvc.Database.decorators__ over your function. Example bellow:
+In case of database used within controllers, you will need to use __@safe__ from __fastapi_framework_mvc.database.decorators__ over your function. Example bellow:
 
 ```python
 
-from fastapi_framework_mvc.Database.decorators import safe
+from fastapi_framework_mvc.database.decorators import safe
 
 
 class Content(object):
@@ -147,34 +162,34 @@ class Controller(Content):
 
 * Web based http file controllers:
 
-All web based http file controllers must be placed under the ```Controllers.Web``` module.
+All web based http file controllers must be placed under the ```controllers.web``` module.
 
-The class based controllers that you register into the app must be imported into the ```__init__.py``` file of the ```Controller.Web``` module.
+The class based controllers that you register into the app must be imported into the ```__init__.py``` file of the ```controller.web``` module.
 
-The file based that contain your view functions must  must also be inmported into the ```__init__.py``` file of the ```Controller.Web``` module.
+The file based that contain your view functions must must also be imported into the ```__init__.py``` file of the ```controller.web``` module.
 
 
 * Rest api controllers:
 
-All Rest API based controllers must be placed under the src/Controllers/WS folder.
+All Rest API based controllers must be placed under the ```controllers.ws``` folder.
 
-The class based controllers that you register into the app must be imported into the ```__init__.py``` file of the ```Controller.Web``` module.
+The class based controllers that you register into the app must be imported into the ```__init__.py``` file of the ```controller.ws``` module.
 
-The file based that contain your view functions must  must also be inmported into the ```__init__.py``` file of the ```Controller.Web``` module.
+The file based that contain your view functions must must also be imported into the ```__init__.py``` file of the ```controller.ws``` module.
 
 ## Creating models:
 
 
-you can create SQLAlchemy models by creating a new module under the ```Models.Persistent``` module and place each models inside your module that you previously created. 
+you can create SQLAlchemy models by creating a new module under the ```models.persistent``` module and place each models inside your module that you previously created. 
 
-The models that you register into the app must be an ```Database.Model ``` or ```Database.get_models_by_name('replace that with your database connection name')``` object, you could import this object using the following line into your database model:
+The models that you register into the app must be an ```database.Model ``` or ```database.get_models_by_name('replace that with your database connection name')``` object, you could import this object using the following line into your database model:
 
 
 ```python
-from Database import Database
+from fastapi_framework_mvc.database import Database
 ```
 
-All models must be imported inside the ```__init__.py``` of your base module and you must import this module in the ```__init__.py``` of the ```Models.Persistent``` module
+All models must be imported inside the ```__init__.py``` of your base module and you must import this module in the ```__init__.py``` of the ```models.persistent``` module
 
 
 ## Static folder:
@@ -290,7 +305,24 @@ see -h for usages
 export CONFIG_FILE=config/config.yml
 ```
 
-* Starting the flask server in standalone
+* Starting using fastapi
+
+In dev mode:
+
+```bash
+# app refers to a app.py in your current working directory.
+python -m fastapi dev --app app
+```
+
+In standalone mode:
+
+```bash
+# app refers to a app.py in your current working directory.
+python -m fastapi run --app app
+```
+app.py example [here](app.py)
+
+* Starting the fastapi server in standalone
 
 ```bash 
 python -m fastapi_framework_mvc.server
