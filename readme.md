@@ -311,14 +311,14 @@ In dev mode:
 
 ```bash
 # needs app.py in your current working directory.
-python -m fastapi dev --app app
+python -m fastapi dev
 ```
 
 In standalone mode:
 
 ```bash
 # needs app.py in your current working directory.
-python -m fastapi run --app app
+python -m fastapi run
 ```
 app.py example [here](app.py)
 
