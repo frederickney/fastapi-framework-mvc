@@ -5,7 +5,6 @@ __author = "Frederick NEY"
 
 import os
 import shutil
-from uuid import uuid5, uuid4, NAMESPACE_URL
 
 from . import templates
 
