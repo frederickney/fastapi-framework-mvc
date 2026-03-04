@@ -268,7 +268,7 @@ class Driver(object):
                 engines_params.update(config['engine'])
             cls.register_engine(
                 driver,
-                config['Driver methods'],
+                config['driver'],
                 config['user'],
                 config['password'],
                 config['address'],
@@ -281,7 +281,7 @@ class Driver(object):
             )
             if driver == "default":
                 cls.setup(
-                    config['Driver methods'],
+                    config['driver'],
                     config['user'],
                     config['password'],
                     config['address'],
