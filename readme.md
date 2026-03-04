@@ -333,6 +333,71 @@ or
 python -m fastapi_framework_mvc.cli --create-project <your project>
 ```
 
+A project can also be packaged and later used by the framework in order to do so, you need to create a 
+__pyproject.toml__ that will build your project into a python package. Best practices ar to put the __pyproject.toml__ 
+in the parent directory of your created project.
+
+Then you will still have to create a __server__ pathon module 
+(and a __models.persistent__ python module if using database connection(s)).
+
+In the __server__ part you will only have to import from your packages the modules under the package server module
+within the \_\_init\_\_.py in __server__. example:
+
+```python
+# coding: utf-8
+#__init__.py
+
+from your_project.server import web, ws, errorhandler, plugins, middleware, socket
+```
+
+
+or if you want multiples application packaged, you will have to create the same python module  __server__ arborescence
+as the one initially on your project but instead of rewriting the routes or loading the routers, you can just for example:
+
+```python
+# coding: utf-8
+# example with two project on the ws.py file
+import your_first_project.server.ws
+import your_second_project.server.ws
+
+
+class Route(object):
+    """
+    Class that will configure all ws services based routes for the server
+    """
+    def __init__(self, server):
+        """
+        Constructor
+        :param server: FastAPI instance
+        :type server: fastapi.FastAPI
+        :return: Route object
+        """
+        your_first_project.server.ws.Route(server)
+        your_second_project.server.ws.Route(server)
+        return
+
+```
+
+In the __models.persistent__ part you will only have to import from your packages the modules under the package models.persistent module
+within the \_\_init\_\_.py in __models.persistent__. example:
+
+```python
+# coding: utf-8
+#__init__.py
+
+from your_project.models.persistent import *
+
+```
+
+or if you want multiples application packaged, and have one or many model declaration conflicts.
+
+```python
+# coding: utf-8
+# example with two project on the __init__.py file
+from your_first_project.models import persistent as  your_first_project # or any other identifier
+from your_second_project.models import persistent as  your_second_project # or any other identifier
+```
+
 When the project is created, more command can be used when the env __"CONFIG_FILE"__ is set and can be run through
 
 * Powershell:
