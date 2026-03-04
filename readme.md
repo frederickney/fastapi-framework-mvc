@@ -310,14 +310,14 @@ export CONFIG_FILE=config/config.yml
 In dev mode:
 
 ```bash
-# app refers to a app.py in your current working directory.
+# needs app.py in your current working directory.
 python -m fastapi dev --app app
 ```
 
 In standalone mode:
 
 ```bash
-# app refers to a app.py in your current working directory.
+# needs app.py in your current working directory.
 python -m fastapi run --app app
 ```
 app.py example [here](app.py)
