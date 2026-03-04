@@ -7,7 +7,7 @@ __author__ = 'Frederick NEY'
 from fastapi.responses import HTMLResponse
 from fastapi_framework_mvc.Server import Process
 from fastapi_framework_mvc.Deprecation import module_deprecation
-module_deprecation(__name__, 'fastapi_framework_mvc.controllers.web.default.http_40x', '1.3.0')
+module_deprecation(__name__, 'fastapi_framework_mvc.controllers.web.default.errors.http_40x', '1.3.0')
 
 
 async def page_or_error404(request, exc):
