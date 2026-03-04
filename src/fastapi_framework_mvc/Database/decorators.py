@@ -8,6 +8,7 @@ import logging
 import sqlalchemy
 
 from .driver import Driver
+from ..Deprecation import deprecated
 
 
 def _rollback():
@@ -25,6 +26,7 @@ def _rollback():
         logging.error(e)
 
 
+@deprecated(message='Use fastapi_framework_mvc.database.safe')
 def safe(func):
     """
     Secure database connections on disconnection or pending rollback other a specific function.

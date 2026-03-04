@@ -6,13 +6,13 @@ __author__ = 'Frederick NEY'
 import functools
 import warnings
 from datetime import datetime, timedelta
-
-from warnings import deprecated
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi_framework_mvc.Deprecation import outdated
 
+from fastapi_framework_mvc.Deprecation import module_deprecation
+module_deprecation(__name__, 'fastapi_framework_mvc.core', '1.3.0')
 
 from . import WS, Web, ErrorHandler, Middleware, Socket, Plugins
 

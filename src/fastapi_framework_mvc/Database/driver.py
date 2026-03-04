@@ -28,6 +28,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from fastapi_framework_mvc.Config import Environment
 
+from fastapi_framework_mvc.Deprecation import  outdated, Future
+
 
 class Driver(object):
     """
@@ -208,6 +210,7 @@ class Driver(object):
         cls.models[name].query = cls.sessions[name].query_property()
 
     @classmethod
+    @Future.replace(version='1.3.0', name='fastapi_framework_mvc.database.Driver methods')
     def get_session_by_name(cls, name):
         """
         Get a session by name
@@ -221,10 +224,12 @@ class Driver(object):
         return None
 
     @classmethod
+    @Future.replace(version='1.3.0', name='fastapi_framework_mvc.database.Driver methods')
     def start_session_by_name(cls, name):
         return scoped_session(cls._sessionmakers[name])
 
     @classmethod
+    @Future.replace(version='1.3.0', name='fastapi_framework_mvc.database.Driver methods')
     def get_engine_by_name(cls, name):
         """
         Get sqlalchemy engine by name
@@ -238,6 +243,7 @@ class Driver(object):
         return None
 
     @classmethod
+    @Future.replace(version='1.3.0', name='fastapi_framework_mvc.database.Driver methods')
     def get_model_by_name(cls, name):
         """
         Get sqlalchemy model by name
@@ -250,6 +256,7 @@ class Driver(object):
         return None
 
     @classmethod
+    @Future.replace(version='1.3.0', name='fastapi_framework_mvc.database.Driver methods')
     def register_engines(cls, echo=False):
         """
         Register databases engines
@@ -261,7 +268,7 @@ class Driver(object):
                 engines_params.update(config['engine'])
             cls.register_engine(
                 driver,
-                config['driver'],
+                config['Driver methods'],
                 config['user'],
                 config['password'],
                 config['address'],
@@ -274,7 +281,7 @@ class Driver(object):
             )
             if driver == "default":
                 cls.setup(
-                    config['driver'],
+                    config['Driver methods'],
                     config['user'],
                     config['password'],
                     config['address'],
@@ -287,6 +294,7 @@ class Driver(object):
                 )
 
     @classmethod
+    @Future.replace(version='1.3.0', name='fastapi_framework_mvc.database.Driver methods')
     def close_sessions(cls):
         for driver, config in Environment.Databases.items():
             cls.close_session(driver)
@@ -294,6 +302,7 @@ class Driver(object):
                 cls.close_default_session()
 
     @classmethod
+    @Future.replace(version='1.3.0', name='fastapi_framework_mvc.database.Driver methods')
     def close_session(cls, name):
         """
         Close a database session by name
@@ -301,6 +310,7 @@ class Driver(object):
         cls.sessions[name].close()
 
     @classmethod
+    @Future.replace(version='1.3.0', name='fastapi_framework_mvc.database.Driver methods')
     def close_default_session(cls):
         """
         Close default database session
@@ -308,6 +318,7 @@ class Driver(object):
         cls.session.close()
 
     @classmethod
+    @outdated
     def setup_sessions(cls, app):
         """
         :return:
@@ -361,6 +372,7 @@ class Driver(object):
         cls.models[name].metadata.create_all(bind=cls.engines[name])
 
     @classmethod
+    @Future.replace(version='1.3.0', name='fastapi_framework_mvc.database.Driver methods')
     def init(cls):
         """
         Function that create schema tables based on imported models within this function.
@@ -379,6 +391,7 @@ class Driver(object):
                 cls.init_db(name=driver)
 
     @classmethod
+    @Future.replace(version='1.3.0', name='fastapi_framework_mvc.database.Driver methods')
     def disconnect(cls, engine, session):
         """
         Function that disconnect safely database
@@ -387,6 +400,7 @@ class Driver(object):
         engine.dispose()
 
     @classmethod
+    @Future.replace(version='1.3.0', name='fastapi_framework_mvc.database.Driver methods')
     def disconnect_all(cls):
         """
         Function that disconnect safely all databases
@@ -396,6 +410,7 @@ class Driver(object):
         cls.disconnect(cls.engine, cls.session)
 
     @classmethod
+    @Future.replace(version='1.3.0', name='fastapi_framework_mvc.database.Driver methods')
     def reconnect_all(cls):
         """
         Function that reconnect safely all databases by disconnecting them and reconnecting them
@@ -404,6 +419,7 @@ class Driver(object):
         cls.register_engines()
 
     @classmethod
+    @Future.replace(version='1.3.0', name='fastapi_framework_mvc.database.Driver methods')
     def to_pandas(cls, query: typing.Union[sqlalchemy.orm.query.Query, sqlalchemy.sql.selectable.Select], engine: str = None):
         """
         Convert SQLAlchemy query object into pandas Dataframe
