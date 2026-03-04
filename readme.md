@@ -255,11 +255,13 @@ app = functions.AsgiFunctionApp(fastapi_framework_mvc.azure.AzureFunctionsApp(),
 ...
 ```
 
+---
 # Running on local desktop:
 
 We assume that your system already had python v3+ and pip v3+ installed.
-
-* installation:
+ 
+installation:
+-------------
 
 ```bash 
 git clone https://github.com/frederickney/fastapi-framework-mvc.git
@@ -272,14 +274,54 @@ or
 pip install fastapi-framework-mvc
 ```
 
-* CLI interface
+CLI interface:
+--------------
+
+* Powershell
+
+```powershell
+fastapi_framework.cli.exe -h
+```
+* Bash
+
+```bash
+fastapi_framework.cli -h
+```
+
+* Python module
 
 ```bash
 python -m fastapi_framework_mvc.cli -h
 ```
 
 
-* Create a new project
+Create a new project:
+------------------------
+
+* Powershell:
+
+```powershell
+fastapi_framework.cli.exe -cp <your project>
+```
+
+or
+
+```bash
+fastapi_framework_mvc.cli.exe --create-project <your project>
+```
+
+* Bash:
+
+```bash
+fastapi_framework.cli -cp <your project>
+```
+or
+
+```bash
+fastapi_framework_mvc.cli --create-project <your project>
+```
+
+* Python module:
 
 ```bash
 python -m fastapi_framework_mvc.cli -cp <your project>
@@ -293,16 +335,36 @@ python -m fastapi_framework_mvc.cli --create-project <your project>
 
 When the project is created, more command can be used when the env __"CONFIG_FILE"__ is set and can be run through
 
+* Powershell:
+```powershell
+fastapi_framework_mvc.app.exe
+```
+
+* Bash:
+```bash
+fastapi_framework_mvc.app
+```
+
+* Python module:
 ```bash
 python -m fastapi_framework_mvc.app
 ```
-
 see -h for usages
+
+# Launching
+
+---
 
 * On every startup
 
+Linux/Mac:
 ```bash 
 export CONFIG_FILE=config/config.yml
+```
+
+Windows:
+```powershell
+$env:CONFIG_FILE = "C:\Users\Z01FNEY\PycharmProjects\fastapi-framework-mvc\test\config\config.yml"
 ```
 
 * Starting using fastapi
