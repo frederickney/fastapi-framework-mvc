@@ -9,7 +9,7 @@ import os
 
 import fastapi_framework_mvc.core as core
 from fastapi_framework_mvc.config import Environment
-from fastapi_framework_mvc.database import Database
+from fastapi_framework_mvc.database import Driver as Database
 from fastapi_framework_mvc.utils import make_controller, make_middleware, make_project
 
 

@@ -27,7 +27,7 @@ from logging.handlers import TimedRotatingFileHandler
 import gunicorn.app.base
 from fastapi_framework_mvc.config import Environment
 from fastapi_framework_mvc.core import Process
-from fastapi_framework_mvc.database import Database
+from fastapi_framework_mvc.database import Driver as Database
 from six import iteritems
 
 parser = argparse.ArgumentParser(description='Python FLASK USGI server')

@@ -7,7 +7,7 @@ from logging.handlers import TimedRotatingFileHandler
 import azure.functions as func
 
 from fastapi_framework_mvc.config import Environment
-from fastapi_framework_mvc.database import Database
+from fastapi_framework_mvc.database import Driver as Database
 from fastapi_framework_mvc.core import Process
 
 

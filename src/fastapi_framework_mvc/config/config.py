@@ -5,6 +5,7 @@ __author__ = 'Frederick NEY'
 
 import logging
 
+from database_connector_kit.config import Environment
 from fastapi_framework_mvc import exceptions
 from . import yaml
 
@@ -36,7 +37,7 @@ def load_file(file, loader=yaml):
     return conf
 
 
-class Environment(object):
+class Environment(Environment):
     """
     Class Environment act as a singleton where after loaded all
     the content of the attributes is available at any part of the project.

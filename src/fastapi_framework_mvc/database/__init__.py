@@ -3,6 +3,15 @@
 
 __author__ = 'Frederick NEY'
 
-from . import driver
-from .decorators import safe
-from .driver import Driver as Database
+from database_connector_kit import driver
+from database_connector_kit.databases import safe
+from database_connector_kit.databases import Driver as Manager
+from database_connector_kit.databases import Driver
+
+__all__ = [
+    "Driver",
+    "Manager",
+    "driver",
+    "safe",
+]
+

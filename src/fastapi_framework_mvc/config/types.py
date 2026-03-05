@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from logging import WARNING
-from typing import Optional, Any
+from typing import Optional, Any, Union
 
 from pydantic import BaseModel
 
@@ -39,3 +39,10 @@ class Database(BaseModel):
 
 class FastApiConf:
     CONF: dict[str, Any]
+
+
+class Conf:
+    SERVER: Server
+    FASTAPI: FastApiConf
+    DATABASES: dict[str, Union[Database, str]]
+    SERVICES: dict[str, Any]

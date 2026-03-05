@@ -8,7 +8,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from fastapi_framework_mvc.config import Environment
-from fastapi_framework_mvc.deprecation import outdated
 from . import errors
 from . import middleware
 from . import plugins

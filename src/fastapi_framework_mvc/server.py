@@ -11,7 +11,7 @@ from logging.handlers import TimedRotatingFileHandler
 
 from fastapi_framework_mvc.config import Environment
 from fastapi_framework_mvc.core import Process
-from fastapi_framework_mvc.database import Database
+from fastapi_framework_mvc.database import Driver as Database
 
 
 def args_parser():
