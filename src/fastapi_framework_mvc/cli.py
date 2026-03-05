@@ -6,14 +6,12 @@ __author__ = 'Frederick NEY'
 
 import os
 
-from fastapi_framework_mvc.Utils import make_controller, make_middleware, make_project
-# temporary rewrite python modules to enable compatibility to version 1.3.0
-from . import set_upper_version_module
-set_upper_version_module()
+from fastapi_framework_mvc.utils import make_controller, make_middleware, make_project
+
 
 def parser():
     import argparse
-    parser = argparse.ArgumentParser(description='Python FLASK server')
+    parser = argparse.ArgumentParser(description='FastAPI Framework MVC CLI')
     parser.add_argument(
         '-cp', '--create-project',
         help='Create project\nexample:\npython -m fastapi_framework_mvc.cli --create-project webapp',

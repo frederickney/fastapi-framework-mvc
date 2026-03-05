@@ -4,8 +4,6 @@
 
 __author__ = 'Frederick NEY'
 
-import sys
-
 try:
     import gevent.monkey
 
@@ -20,22 +18,17 @@ except ImportError as e:
     pass
 
 import argparse
+import logging
 import multiprocessing
+import os
+import sys
+from logging.handlers import TimedRotatingFileHandler
 
 import gunicorn.app.base
+from fastapi_framework_mvc.config import Environment
+from fastapi_framework_mvc.core import Process
+from fastapi_framework_mvc.database import Driver as Database
 from six import iteritems
-
-import os
-import logging
-from logging.handlers import TimedRotatingFileHandler
-import fastapi_framework_mvc.Server as Process
-from fastapi_framework_mvc.Config import Environment
-
-from fastapi_framework_mvc.Database import Database
-# temporary rewrite python modules to enable compatibility to version 1.3.0
-from fastapi_framework_mvc import set_upper_version_module
-set_upper_version_module()
-
 
 parser = argparse.ArgumentParser(description='Python FLASK USGI server')
 parser.add_argument(
@@ -44,7 +37,6 @@ parser.add_argument(
     required=False,
     help='Activate log verbosity mode'
 )
-
 
 
 class Logging():
@@ -69,11 +61,16 @@ class Server(gunicorn.app.base.Application):
 
     @staticmethod
     def number_of_workers():
+        """
+        Return the number of worker processes. Based on th cpu count times 2
+        """
         return multiprocessing.cpu_count() * 2
 
     @staticmethod
     def application():
-        from fastapi_framework_mvc.Server import Process
+        """
+        Loading framework with gunicorn
+        """
         logging.info("Initializing the server...")
         Process.init(tracking_mode=False)
         logging.info("Server initialized...")
@@ -90,6 +87,9 @@ class Server(gunicorn.app.base.Application):
         return Process.wsgi_setup()
 
     def __init__(self, options=None):
+        """
+        Initialize the server using gunicorn
+        """
         Server.options = (options or {}) if not hasattr(Server, 'options') else Server.options
         self.application = Server.application()
         super(Server, self).__init__()
@@ -111,6 +111,9 @@ class Server(gunicorn.app.base.Application):
         super(Server, self).reload()
 
     def load_config(self):
+        """
+        Load gunicorn options
+        """
         logging.info(Server.options)
         config = dict([(key, value) for key, value in iteritems(Server.options)
                        if key in self.cfg.settings and value is not None])
@@ -118,6 +121,9 @@ class Server(gunicorn.app.base.Application):
             self.cfg.set(key.lower(), value)
 
     def load(self):
+        """
+        Load app for gunicorn
+        """
         try:
             import eventlet
             eventlet.monkey_patch(all=True)
@@ -132,6 +138,9 @@ class Server(gunicorn.app.base.Application):
 
     @classmethod
     def load_options(cls):
+        """
+        Sets gunicorn options
+        """
         cls.options = {
             'bind': '%s:%i' % (Environment.SERVER['BIND']['ADDRESS'], int(Environment.SERVER['BIND']['PORT'])),
             'workers': Server.number_of_workers(),
@@ -149,7 +158,10 @@ class Server(gunicorn.app.base.Application):
             cls.options["keyfile"] = Environment.SERVER['SSL']['PrivateKey']
 
 
-def main(args: argparse.ArgumentParser):
+def start(args: argparse.ArgumentParser):
+    """
+    starts process
+    """
     if not args.disable_log_files:
         if os.environ.get("LOG_DIR", None):
             os.environ.setdefault("log_dir", os.environ.get("LOG_DIR", "/var/log/server/"))
@@ -229,7 +241,15 @@ def main(args: argparse.ArgumentParser):
         exit(255)
 
 
-if __name__ == '__main__':
+def main():
+    """"
+    main entrypoint for fastapi_framework_mvc.wsgi
+    """
+    if os.getcwd() not in sys.path:
+        sys.path.append(os.getcwd())
     args = parser.parse_args()
-    main(args)
+    start(args)
 
+
+if __name__ == '__main__':
+    main()
