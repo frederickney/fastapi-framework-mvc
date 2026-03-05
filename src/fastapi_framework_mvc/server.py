@@ -11,6 +11,9 @@ from logging.handlers import TimedRotatingFileHandler
 import fastapi_framework_mvc.Server as Server
 from fastapi_framework_mvc.Config import Environment
 from fastapi_framework_mvc.Database import Database
+# temporary rewrite python modules to enable compatibility to version 1.3.0
+from . import set_upper_version_module
+set_upper_version_module()
 
 def args_parser():
     import argparse

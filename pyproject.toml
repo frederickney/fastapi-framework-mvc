@@ -39,7 +39,7 @@ dependencies = [
     "database-connector-kit",
     'importlib-metadata; python_version>"3.7"'
 ]
-version="1.2.2"
+version="1.2.3"
 
 
 [tool.poetry]

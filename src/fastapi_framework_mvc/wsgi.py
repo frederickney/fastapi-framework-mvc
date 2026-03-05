@@ -4,6 +4,8 @@
 
 __author__ = 'Frederick NEY'
 
+import sys
+
 try:
     import gevent.monkey
 
@@ -30,6 +32,10 @@ import fastapi_framework_mvc.Server as Process
 from fastapi_framework_mvc.Config import Environment
 
 from fastapi_framework_mvc.Database import Database
+# temporary rewrite python modules to enable compatibility to version 1.3.0
+from fastapi_framework_mvc import set_upper_version_module
+set_upper_version_module()
+
 
 parser = argparse.ArgumentParser(description='Python FLASK USGI server')
 parser.add_argument(

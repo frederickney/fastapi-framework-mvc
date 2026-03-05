@@ -6,6 +6,9 @@ from logging.handlers import TimedRotatingFileHandler
 from fastapi_framework_mvc.Config import Environment
 from fastapi_framework_mvc.Server import Process
 from fastapi_framework_mvc.Database import Database
+# temporary rewrite python modules to enable compatibility to version 1.3.0
+from . import set_upper_version_module
+set_upper_version_module()
 
 import azure.functions as func
 

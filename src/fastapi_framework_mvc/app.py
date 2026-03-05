@@ -11,7 +11,9 @@ import fastapi_framework_mvc.Server as Server
 from fastapi_framework_mvc.Config import Environment
 from fastapi_framework_mvc.Database import Database
 from fastapi_framework_mvc.Utils import make_controller, make_middleware, make_project
-
+# temporary rewrite python modules to enable compatibility to version 1.3.0
+from . import set_upper_version_module
+set_upper_version_module()
 
 def parser():
     import argparse

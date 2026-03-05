@@ -15,6 +15,12 @@ from fastapi_framework_mvc.Deprecation import module_deprecation
 module_deprecation(__name__, 'fastapi_framework_mvc.core', '1.3.0')
 
 from . import WS, Web, ErrorHandler, Middleware, Socket, Plugins
+from . import WS as ws
+from . import Web as web
+from . import ErrorHandler as errors
+from . import Middleware as middleware
+from . import Socket as socket
+from . import Plugins as plugins
 
 
 def configure_logs(name, format, output_file, debug='info'):
