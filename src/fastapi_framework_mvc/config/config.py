@@ -6,8 +6,8 @@ __author__ = 'Frederick NEY'
 import logging
 
 from fastapi_framework_mvc import exceptions
+from fastapi_framework_mvc.exceptions.runtime import web_denied
 from . import yaml
-from ._exceptions import web_denied
 
 
 def _load(file, loader):

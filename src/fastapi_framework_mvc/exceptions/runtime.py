@@ -2,6 +2,8 @@
 
 
 __author__ = 'Frederick NEY'
+import functools
+import warnings
 
 
 class RuntimeException(Exception):
@@ -46,3 +48,33 @@ class ServiceChangeException(RuntimeException):
 
     def __str__(self):
         return self.message
+
+
+class WebDenyFunctionCall(DeprecationWarning):
+    """
+    Base class for disabling call of function.
+    """
+
+    def __init__(self, *args, **kwargs):  # real signature unknown
+        super(WebDenyFunctionCall, self).__init__(*args, **kwargs)
+
+    @staticmethod  # known case of __new__
+    def __new__(*args, **kwargs):  # real signature unknown
+        """ Create and return a new object.  See help(type) for accurate signature. """
+        return args[1]
+
+
+def web_denied(func):
+    """Denial call to function using web request"""
+
+    @functools.wraps(func)
+    def deny(*args, **kwargs):
+        from fastapi import Request, Response
+        if len(dir(Request.url)) != 0:
+            warnings.simplefilter('always', WebDenyFunctionCall)  # turn off filter
+            warnings.warn("Access denied to function %s." % func.__name__, category=WebDenyFunctionCall, stacklevel=2)
+            warnings.simplefilter('default', WebDenyFunctionCall)  # reset filter
+            return Response({'error': "Access denied to function %s." % func.__name__}, status_code=403)
+        return func(*args, **kwargs)
+
+    return deny
