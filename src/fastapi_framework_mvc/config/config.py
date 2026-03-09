@@ -7,6 +7,7 @@ import logging
 
 from fastapi_framework_mvc import exceptions
 from . import yaml
+from ._exceptions import web_denied
 
 
 def _load(file, loader):
@@ -86,6 +87,7 @@ class Environment:
         return loader.load(file)
 
     @classmethod
+    @web_denied
     def reload(cls, file):
         """
         Triggered on uvicorn reload or fastapi reload on debug
@@ -100,6 +102,7 @@ class Environment:
         cls.FASTAPI = conf['FASTAPI'] if 'FASTAPI' in conf else cls.FASTAPI
 
     @classmethod
+    @web_denied
     def load(cls, file):
         """
         Load configuration file. and fulfills class's attributes for handling them anywhere on the code.
@@ -114,6 +117,7 @@ class Environment:
         cls.FASTAPI.setdefault('CONFIG', {})
 
     @classmethod
+    @web_denied
     def load_databases(cls, conf):
         """
         Load database configurations into Databases class's attribute
@@ -130,6 +134,7 @@ class Environment:
             cls.Databases = {}
 
     @classmethod
+    @web_denied
     def add_database(cls, db_type, db_conf):
         """
         Add database configuration within Databases class's attribute
@@ -150,6 +155,7 @@ class Environment:
             )
 
     @classmethod
+    @web_denied
     def set_default_database(cls, db_conf):
         """
         Add default database configuration within Databases class's attribute
@@ -172,6 +178,7 @@ class Environment:
             )
 
     @classmethod
+    @web_denied
     def load_logins(cls, conf):
         """
         Load logins configurations into Logins class's attribute
@@ -199,6 +206,7 @@ class Environment:
             )
 
     @classmethod
+    @web_denied
     def load_runtime(cls, conf):
         """
         Load deployment setup configurations into SERVER class's attribute
@@ -208,6 +216,7 @@ class Environment:
         cls.SERVER = conf['SERVER']
 
     @classmethod
+    @web_denied
     def load_services(cls, conf):
         """
         Load other attributes configurations into Services class's attribute
