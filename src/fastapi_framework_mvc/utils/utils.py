@@ -5,14 +5,17 @@ __author__ = "Frederick NEY"
 
 import os
 
+from fastapi_framework_mvc.exceptions.runtime import web_denied
 from . import templates
 from .module import generate, create_project, create_server, create_fastapi_entrypoint
 
 
+@web_denied
 def make_auth():
     pass
 
 
+@web_denied
 def make_middleware(basepath, middleware):
     if not os.path.exists(os.path.join(os.path.join(basepath, 'server'), 'middleware.py')):
         fp = open(os.path.join(os.path.join(basepath, 'server'), 'middleware.py'), "w")
@@ -24,6 +27,7 @@ def make_middleware(basepath, middleware):
     pass
 
 
+@web_denied
 def make_controller(basepath, controller):
     generate(basepath, controller)
     fp = open(
@@ -42,6 +46,7 @@ def make_controller(basepath, controller):
     fp.close()
 
 
+@web_denied
 def make_project(basepath, project, inst_dir):
     create_project(basepath, project)
     create_server(project, os.path.join(basepath, project), inst_dir)

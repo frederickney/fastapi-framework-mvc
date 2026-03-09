@@ -6,9 +6,11 @@ __author = "Frederick NEY"
 import os
 import shutil
 
+from fastapi_framework_mvc.exceptions.runtime import web_denied
 from . import templates
 
 
+@web_denied
 def create_dir(basepath, dir):
     if not os.path.exists(os.path.join(basepath, dir)):
         os.mkdir(os.path.join(basepath, dir), 0o755)
@@ -16,6 +18,7 @@ def create_dir(basepath, dir):
             ("Waiting for path creation")
 
 
+@web_denied
 def create_project(basepath, project):
     if not os.path.exists(os.path.join(basepath, project)):
         create_dir(basepath, project)
@@ -28,6 +31,7 @@ def create_project(basepath, project):
     generate(os.path.join(basepath, project), "{}/{}".format('server', 'ws'))
 
 
+@web_denied
 def generate(basepath, module, sub_module=None):
     if not os.path.exists(os.path.join(basepath, os.path.dirname(module))):
         generate(
@@ -67,6 +71,7 @@ def generate(basepath, module, sub_module=None):
             fp.close()
 
 
+@web_denied
 def try_copy(src, dst):
     """
 
@@ -78,10 +83,12 @@ def try_copy(src, dst):
         shutil.copytree(src, dst)
 
 
+@web_denied
 def try_create_errors(path):
     pass
 
 
+@web_denied
 def try_create_entry(path, entry):
     if os.path.exists(os.path.join(path, 'server')):
         if not os.path.exists(os.path.join(os.path.join(path, 'server'), '{}.py'.format(entry))):
@@ -93,6 +100,7 @@ def try_create_entry(path, entry):
             fp.close()
 
 
+@web_denied
 def try_create_web_entry(path):
     if os.path.exists(os.path.join(path, 'server')):
         if not os.path.exists(os.path.join(os.path.join(path, 'server'), '{}.py'.format('web'))):
@@ -119,6 +127,7 @@ def try_create_web_entry(path):
             fp.close()
 
 
+@web_denied
 def try_create_error_controller(path):
     if os.path.exists(os.path.join(path, 'server')):
         if not os.path.exists(os.path.join(os.path.join(path, 'server'), '{}.py'.format('errorhandler'))):
@@ -149,10 +158,12 @@ def try_create_error_controller(path):
     pass
 
 
+@web_denied
 def try_create_ws_entry(path):
     try_create_entry(path, 'ws')
 
 
+@web_denied
 def try_create_default_conf(path, project):
     if not os.path.exists(os.path.join(path, 'config')):
         os.mkdir(os.path.join(path, 'config'), 0o755)
@@ -167,6 +178,7 @@ def try_create_fastapi_entrypoint(path):
         fd.write(templates.FASTAPI_APP)
         fd.close()
 
+@web_denied
 def try_create_socket_entry(path):
     if os.path.exists(os.path.join(path, 'server')):
         if not os.path.exists(os.path.join(os.path.join(path, 'server'), '{}.py'.format('socket'))):
@@ -178,6 +190,7 @@ def try_create_socket_entry(path):
             fp.close()
 
 
+@web_denied
 def create_server(project, path, _inst_dir):
     if not os.path.exists(os.path.join(path, 'server')):
         create_dir(path, 'server')
@@ -195,5 +208,6 @@ def create_server(project, path, _inst_dir):
     try_create_default_conf(path, project)
 
 
+@web_denied
 def create_fastapi_entrypoint(path):
     try_create_fastapi_entrypoint(path)
