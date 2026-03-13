@@ -5,15 +5,14 @@
 __author__ = 'Frederick NEY'
 
 import os
+import sys
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
-import fastapi_framework_mvc.Server as Server
-from fastapi_framework_mvc.Config import Environment
-from fastapi_framework_mvc.Database import Database
-# temporary rewrite python modules to enable compatibility to version 1.3.0
-from . import set_upper_version_module
-set_upper_version_module()
+from fastapi_framework_mvc.config import Environment
+from fastapi_framework_mvc.core import Process
+from fastapi_framework_mvc.database import Driver as Database
+
 
 def args_parser():
     import argparse
@@ -42,6 +41,11 @@ def args_parser():
 
 
 def main():
+    """
+    main entry point for fastapi_framework_mvc server
+    """
+    if os.getcwd() not in sys.path:
+        sys.path.append(os.getcwd())
     args = args_parser()
     os.environ.setdefault("log_file", os.environ.get("LOG_FILE", "log/process.log"))
     if not os.path.exists(os.path.dirname(os.environ.get('log_file'))):
@@ -106,19 +110,19 @@ def main():
         Database.register_engines(echo=Environment.SERVER['CAPTURE'])
         Database.init()
         logging.debug("Database(s) connected...")
-    Server.Process.init(tracking_mode=False)
+    Process.init(tracking_mode=False)
     logging.debug("Server initialized...")
-    Server.Process.load_plugins()
+    Process.load_plugins()
     logging.debug("Loading server routes...")
-    Server.Process.load_routes()
-    Server.Process.load_middleware()
+    Process.load_routes()
+    Process.load_middleware()
     logging.debug("Server routes loaded...")
     logging.debug("Loading websocket events")
-    Server.Process.load_socket_events()
+    Process.load_socket_events()
     logging.debug("Websocket events loaded...")
     # app.teardown_appcontext(Database.save)
     logging.info("Server is now starting...")
-    Server.Process.start(args)
+    Process.start(args)
 
 
 if __name__ == '__main__':

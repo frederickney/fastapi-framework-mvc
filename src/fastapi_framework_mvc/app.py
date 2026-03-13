@@ -7,13 +7,11 @@ __author__ = 'Frederick NEY'
 import logging
 import os
 
-import fastapi_framework_mvc.Server as Server
-from fastapi_framework_mvc.Config import Environment
-from fastapi_framework_mvc.Database import Database
-from fastapi_framework_mvc.Utils import make_controller, make_middleware, make_project
-# temporary rewrite python modules to enable compatibility to version 1.3.0
-from . import set_upper_version_module
-set_upper_version_module()
+import fastapi_framework_mvc.core as core
+from fastapi_framework_mvc.config import Environment
+from fastapi_framework_mvc.database import Driver as Database
+from fastapi_framework_mvc.utils import make_controller, make_middleware, make_project
+
 
 def parser():
     import argparse
@@ -67,20 +65,20 @@ logging.debug("Connecting to database(s)...")
 Database.register_engines(echo=Environment.SERVER['CAPTURE'])
 Database.init()
 logging.debug("Database(s) connected...")
-Server.Process.init(tracking_mode=False)
+core.Process.init(tracking_mode=False)
 # Server.Process.init_sheduler()
 logging.debug("Server initialized...")
-Server.Process.load_plugins()
+core.Process.load_plugins()
 logging.debug("Loading server routes...")
-Server.Process.load_routes()
-Server.Process.load_middleware()
+core.Process.load_routes()
+core.Process.load_middleware()
 logging.debug("Server routes loaded...")
 logging.debug("Loading websocket events")
-Server.Process.load_socket_events()
+core.Process.load_socket_events()
 logging.debug("Websocket events loaded...")
 # app.teardown_appcontext(Database.save)
 logging.info("Server is now starting...")
-app = Server.Process.get()
+app = core.Process.get()
 
 if __name__ == '__main__':
     parser()
