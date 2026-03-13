@@ -15,7 +15,7 @@ class Load(object):
         """
         Main entrypoint to load plugins from working directory.
         Looks for server or Server module within working directory for any plugins or Plugins file containing
-        a Load class or method inside.
+        a Load class.
         :param srv: FastAPI instance
         :type server: fastapi.FastAPI
         :return: Load object

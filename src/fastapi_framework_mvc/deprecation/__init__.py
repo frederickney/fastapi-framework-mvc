@@ -177,7 +177,7 @@ class Future(object):
     def replace(version, name):
         """
         Future mark functions as replaced by another.
-        It will result in a error being emitted
+        It will result in an error being emitted
         when the function is used.
         """
         def replacing(func):

@@ -38,7 +38,7 @@ class Process(object):
     @classmethod
     def init(cls, tracking_mode=False):
         """
-        Initialise the framework and creates fastapi instances with others plugins based on configuration
+        Initialize the framework and creates fastapi instances with others plugins based on configuration
         :param tracking_mode:
         :type tracking_mode: bool
         :return:
@@ -87,7 +87,7 @@ class Process(object):
         cls.templates = Jinja2Templates(directory=Environment.SERVER['TEMPLATE_PATH'])
 
     @classmethod
-    def instanciate(cls):
+    def instantiate(cls):
         """
             :return:
             :rtype: fastapi.FastAPI
@@ -188,7 +188,7 @@ class Process(object):
     def load_routes(cls):
         """
         Part that loads all endpoints / routes in working directory where the framework is called.
-        Provides Process._app attribute to plugins as argument.
+        Provides Process._app attribute to routes as argument.
         """
         ws.Route(cls._app)
         web.Route(cls._app)
@@ -206,7 +206,7 @@ class Process(object):
     def load_socket_events(cls):
         """
         Part that loads all websocket events in working directory where the framework is called.
-        Provides Process._app attribute to plugins as argument.
+        Provides Process._app attribute to socket as argument.
         """
         socket.Load(cls._app)
 

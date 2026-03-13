@@ -13,7 +13,7 @@ class Route(object):
         """
         Main entrypoint to load errors routes from working directory.
         Looks for server or Server module within working directory for any errorhandler or ErrorHandler file containing
-        a Route class or method inside.
+        a Route class.
         :param srv: FastAPI instance
         :type srv: fastapi.FastAPI
         :return: Route object
