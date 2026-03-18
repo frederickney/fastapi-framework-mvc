@@ -8,8 +8,9 @@ import logging
 import os
 
 import fastapi_framework_mvc.core as core
+from fastapi_framework_mvc.common import BaseApp
 from fastapi_framework_mvc.config import Environment
-from fastapi_framework_mvc.database import Driver as Database
+from fastapi_framework_mvc.core.logging import configure_basic_logger
 from fastapi_framework_mvc.utils import make_controller, make_middleware, make_project
 
 
@@ -44,39 +45,27 @@ def parser():
 
 
 logging.info("Starting server...")
+if "CONFIG_FILE" not in os.environ and not os.path.exists("/etc/fastapi/"):
+    os.environ.setdefault(
+        'CONFIG_FILE',
+        "config/config.yml" if os.path.exists("config/config.yml")
+        else "/etc/fastapi/config.yml" if os.path.exists("/etc/fastapi/config.yml")
+        else None
+    )
+if not 'CONFIG_FILE' in os.environ:
+    print('Unable tp detect any configuration files, use CONFIG_FILE env to override detection')
+    exit(255)
 logging.info("Loading configuration file...")
-Environment.load(os.environ.get('CONFIG_FILE', "/etc/server/config.json"))
+Environment.load(os.environ['CONFIG_FILE'])
+logging.info("Configuration file loaded...")
 try:
     loglevel = Environment.SERVER['LOG']['LEVEL']
-    logging.basicConfig(
-        level=loglevel.upper(),
-        format='%(asctime)s %(levelname)s %(message)s'
-    )
-    root_logger = logging.getLogger()
-    root_logger.setLevel(loglevel.upper())
+    configure_basic_logger(loglevel)
 except KeyError as e:
-    logging.basicConfig(
-        level=logging.getLevelName(logging.INFO),
-        format='%(asctime)s %(levelname)s %(message)s'
-    )
-    root_logger = logging.getLogger()
-    root_logger.setLevel(logging.INFO)
-logging.debug("Connecting to database(s)...")
-Database.register_engines(echo=Environment.SERVER['CAPTURE'])
-Database.init()
-logging.debug("Database(s) connected...")
+    configure_basic_logger(logging.INFO)
+base_app = BaseApp()
+app = base_app.application()
 core.Process.init(tracking_mode=False)
-# Server.Process.init_sheduler()
-logging.debug("Server initialized...")
-core.Process.load_plugins()
-logging.debug("Loading server routes...")
-core.Process.load_routes()
-core.Process.load_middleware()
-logging.debug("Server routes loaded...")
-logging.debug("Loading websocket events")
-core.Process.load_socket_events()
-logging.debug("Websocket events loaded...")
-# app.teardown_appcontext(Database.save)
 logging.info("Server is now starting...")
 app = core.Process.get()
 

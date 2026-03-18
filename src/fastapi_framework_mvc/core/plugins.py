@@ -4,7 +4,6 @@
 __author__ = 'Frederick NEY'
 
 
-
 class Load(object):
     """
     Class that will load plugins from working directory from where

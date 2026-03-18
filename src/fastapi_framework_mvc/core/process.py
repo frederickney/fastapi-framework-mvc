@@ -3,6 +3,9 @@
 
 __author__ = 'Frederick NEY'
 
+import logging
+import multiprocessing
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -14,6 +17,13 @@ from . import plugins
 from . import socket
 from . import web
 from . import ws
+
+
+def number_of_workers():
+    """
+    Return the number of worker processes. Based on th cpu count times 2
+    """
+    return multiprocessing.cpu_count() * 2
 
 
 class Process(object):
@@ -38,7 +48,7 @@ class Process(object):
     @classmethod
     def init(cls, tracking_mode=False):
         """
-        Initialize the framework and creates fastapi instances with others plugins based on configuration
+        Initialise the framework and creates fastapi instances with others plugins based on configuration
         :param tracking_mode:
         :type tracking_mode: bool
         :return:
@@ -87,7 +97,7 @@ class Process(object):
         cls.templates = Jinja2Templates(directory=Environment.SERVER['TEMPLATE_PATH'])
 
     @classmethod
-    def instantiate(cls):
+    def instanciate(cls):
         """
             :return:
             :rtype: fastapi.FastAPI
@@ -95,14 +105,16 @@ class Process(object):
         return cls._app
 
     @classmethod
-    def start(cls, args):
+    def _asgi(cls, package, args, workers=1):
         """
+        Private asgi entrypoint used by asgi and start method
         Start fastapi application using uvicorn. This method is blocking and is the main process.
         Can be stopped using keyboard signals
         :param args: needs arguments listening_address (nullable), listening_port (required) and pid (nullable)
         :type args: argparse.Namespace
         :return:
         """
+        logging.debug("Starting server...")
         cls._args = args
         import uvicorn
         if args.listening_address is not None:
@@ -113,11 +125,12 @@ class Process(object):
                     if args.pid:
                         cls.pid()
                     uvicorn.run(
-                        cls._app,
+                        package,
                         host=args.listening_address,
                         port=int(args.listening_port),
                         ssl_keyfile=Environment.SERVER['SSL']['PrivateKey'],
-                        ssl_certfile=Environment.SERVER['SSL']['Certificate']
+                        ssl_certfile=Environment.SERVER['SSL']['Certificate'],
+                        workers=workers
                     )
                 finally:
                     if args.pid:
@@ -127,9 +140,10 @@ class Process(object):
                     if args.pid:
                         cls.pid()
                     uvicorn.run(
-                        cls._app,
+                        package,
                         host=args.listening_address,
-                        port=int(args.listening_port)
+                        port=int(args.listening_port),
+                        workers=workers,
                     )
                 finally:
                     if args.pid:
@@ -142,11 +156,12 @@ class Process(object):
                     if args.pid:
                         cls.pid()
                     uvicorn.run(
-                        cls._app,
+                        package,
                         host="0.0.0.0",
                         port=int(args.listening_port),
                         ssl_keyfile=Environment.SERVER['SSL']['PrivateKey'],
-                        ssl_certfile=Environment.SERVER['SSL']['Certificate']
+                        ssl_certfile=Environment.SERVER['SSL']['Certificate'],
+                        workers=workers
                     )
                 finally:
                     if args.pid:
@@ -156,14 +171,37 @@ class Process(object):
                     if args.pid:
                         cls.pid()
                     uvicorn.run(
-                        cls._app,
+                        package,
                         host="0.0.0.0",
-                        port=int(args.listening_port)
+                        port=int(args.listening_port),
+                        workers=workers
                     )
                 finally:
                     if args.pid:
                         cls.shutdown()
             # logger.info("Server is running")
+
+    @classmethod
+    def asgi(cls, package, args):
+        """
+        Start fastapi application using uvicorn. This method is blocking and is the main process.
+        Can be stopped using keyboard signals
+        :param args: needs arguments listening_address (nullable), listening_port (required) and pid (nullable)
+        :type args: argparse.Namespace
+        :return:
+        """
+        cls._asgi(package, args, number_of_workers())
+
+    @classmethod
+    def start(cls, args):
+        """
+        Start fastapi application using uvicorn. This method is blocking and is the main process.
+        Can be stopped using keyboard signals
+        :param args: needs arguments listening_address (nullable), listening_port (required) and pid (nullable)
+        :type args: argparse.Namespace
+        :return:
+        """
+        cls._asgi(cls._app, args=args, workers=1)
 
     @classmethod
     def wsgi_setup(cls):
@@ -188,7 +226,7 @@ class Process(object):
     def load_routes(cls):
         """
         Part that loads all endpoints / routes in working directory where the framework is called.
-        Provides Process._app attribute to routes as argument.
+        Provides Process._app attribute to plugins as argument.
         """
         ws.Route(cls._app)
         web.Route(cls._app)
@@ -206,7 +244,7 @@ class Process(object):
     def load_socket_events(cls):
         """
         Part that loads all websocket events in working directory where the framework is called.
-        Provides Process._app attribute to socket as argument.
+        Provides Process._app attribute to plugins as argument.
         """
         socket.Load(cls._app)
 
