@@ -5,7 +5,7 @@ from fastapi_framework_mvc.core import Process
 from fastapi_framework_mvc.database import Database
 
 
-class Logging():
+class Logging:
     logging_dir_exist = False
     _loglevel = 'warning'
 
@@ -27,7 +27,7 @@ class BaseApp:
             logging.debug("Database(s) connected...")
 
     @staticmethod
-    def application():
+    def load_app():
         Process.init(tracking_mode=False)
         logging.debug("Server initialized...")
         Process.load_plugins()

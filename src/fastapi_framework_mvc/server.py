@@ -94,7 +94,7 @@ def main():
         pass
     logging.debug("Configuration file loaded...")
     base_app = BaseApp()
-    base_app.application()
+    base_app.load_app()
     Process.start(args)
 
 

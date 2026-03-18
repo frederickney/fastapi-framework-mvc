@@ -29,6 +29,7 @@ except ImportError:
         f"{__package__}.{os.path.basename(__file__).replace('.py', '')} is not compatible with windows, use {__package__}.{os.path.basename(__file__).replace('wsgi.py', 'server')} or {__package__}.{os.path.basename(__file__).replace('wsgi', 'asgi')} instead.")
     exit(0)
 from fastapi_framework_mvc.config import Environment
+from fastapi_framework_mvc.core import Process
 from fastapi_framework_mvc.core.logging import setup_file_logging, configure_basic_logger
 from fastapi_framework_mvc.common import Logging
 from fastapi_framework_mvc.common import BaseApp
@@ -76,7 +77,8 @@ class Server(gunicorn.app.base.Application, BaseApp):
         except ImportError as e:
             pass
         Environment.reload(os.environ['CONFIG_FILE'])
-        self.application = Server.application()
+        self.application = Server.load_app()
+        self.application = Process.wsgi_setup()
         Server.load_options()
         super(Server, self).reload()
 
@@ -85,8 +87,9 @@ class Server(gunicorn.app.base.Application, BaseApp):
         Load gunicorn options
         """
         logging.info(Server.options)
-        config = dict([(key, value) for key, value in iteritems(Server.options)
-                       if key in self.cfg.settings and value is not None])
+        config = dict(
+            [(key, value) for key, value in iteritems(Server.options) if key in self.cfg.settings and value is not None]
+        )
         for key, value in iteritems(config):
             self.cfg.set(key.lower(), value)
 
@@ -130,9 +133,11 @@ class Server(gunicorn.app.base.Application, BaseApp):
             cls.options["keyfile"] = Environment.SERVER['SSL']['PrivateKey']
 
 
-def start(args: argparse.ArgumentParser):
+def start(args):
     """
     Loads options and starts process.
+    :param args:
+    :type args: argparse.Namespace
     """
     logging.info("Loading options...")
     Server.load_options()

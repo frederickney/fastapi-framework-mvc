@@ -64,7 +64,8 @@ class Server(BaseApp):
         """
         Server.options = (options or {}) if not hasattr(Server, 'options') else Server.options
         super(Server, self).__init__()
-        self.application = Server.application()
+        Server.load_app()
+        self.application = Process.wsgi_setup()
 
     def load(self):
         """

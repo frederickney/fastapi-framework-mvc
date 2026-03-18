@@ -73,6 +73,6 @@ def AzureFunctionsApp():
     except PermissionError as e:
         pass
     base_app = BaseApp()
-    app = base_app.application()
+    base_app.load_app()
     logging.info("Returning wsgi application to Azure Function App...")
     return Process.wsgi_setup()
