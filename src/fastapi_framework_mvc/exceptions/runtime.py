@@ -69,12 +69,11 @@ def web_denied(func):
 
     @functools.wraps(func)
     def deny(*args, **kwargs):
-        from fastapi import Request, Response
-        if len(dir(Request.url)) != 0:
-            warnings.simplefilter('always', WebDenyFunctionCall)  # turn off filter
-            warnings.warn("Access denied to function %s." % func.__name__, category=WebDenyFunctionCall, stacklevel=2)
-            warnings.simplefilter('default', WebDenyFunctionCall)  # reset filter
-            return Response({'error': "Access denied to function %s." % func.__name__}, status_code=403)
+        #TODO figure it out test condition to prevent function bein called on web request
+        #    warnings.simplefilter('always', WebDenyFunctionCall)  # turn off filter
+        #    warnings.warn("Access denied to function %s." % func.__name__, category=WebDenyFunctionCall, stacklevel=2)
+        #    warnings.simplefilter('default', WebDenyFunctionCall)  # reset filter
+        #    return Response({'error': "Access denied to function %s." % func.__name__}, status_code=403)
         return func(*args, **kwargs)
 
     return deny
