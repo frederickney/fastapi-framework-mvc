@@ -79,13 +79,15 @@ def main():
     Environment.load(os.environ['CONFIG_FILE'])
     try:
         configure_basic_logger(
-            'warning' if not 'LEVEL' in Environment.SERVER['LOG'] else Environment.SERVER['LOG']['LEVEL'])
+            'warning' if not 'LEVEL' in Environment.SERVER['LOG'] else Environment.SERVER['LOG']['LEVEL']
+        )
     except KeyError as e:
         pass
     try:
         if not args.disable_log_files:
             setup_file_logging(
-                'warning' if not 'LEVEL' in Environment.SERVER['LOG'] else Environment.SERVER['LOG']['LEVEL'])
+                'warning' if not 'LEVEL' in Environment.SERVER['LOG'] else Environment.SERVER['LOG']['LEVEL']
+            )
     except KeyError as e:
         pass
     except FileNotFoundError as e:
