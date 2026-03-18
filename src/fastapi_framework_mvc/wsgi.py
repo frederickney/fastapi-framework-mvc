@@ -62,7 +62,9 @@ class Server(gunicorn.app.base.Application, BaseApp):
         Server.options = (options or {}) if not hasattr(Server, 'options') else Server.options
         super(Server, self).__init__()
         BaseApp.__init__(self)
-        self.application = Server.application()
+        Server.load_app()
+        self.application = Process.wsgi_setup()
+
 
     def reload(self):
         """
@@ -77,7 +79,7 @@ class Server(gunicorn.app.base.Application, BaseApp):
         except ImportError as e:
             pass
         Environment.reload(os.environ['CONFIG_FILE'])
-        self.application = Server.load_app()
+        Server.load_app()
         self.application = Process.wsgi_setup()
         Server.load_options()
         super(Server, self).reload()
