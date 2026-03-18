@@ -65,6 +65,6 @@ server =  "fastapi_framework_mvc:server"
 cli =  "fastapi_framework_mvc:cli"
 [project.scripts]
 "fastapi_framework_mvc.wsgi" = "fastapi_framework_mvc.wsgi:main"
-"fastapi_framework_mvc.wsgi" = "fastapi_framework_mvc.asgi:main"
+"fastapi_framework_mvc.asgi" = "fastapi_framework_mvc.asgi:main"
 "fastapi_framework_mvc.server" =  "fastapi_framework_mvc.server:main"
 "fastapi_framework_mvc.cli" =  "fastapi_framework_mvc.cli:parser"
