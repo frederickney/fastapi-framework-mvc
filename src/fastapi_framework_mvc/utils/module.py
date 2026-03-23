@@ -191,6 +191,30 @@ def try_create_socket_entry(path):
 
 
 @web_denied
+def try_create_plugins_entry(path):
+    if os.path.exists(os.path.join(path, 'server')):
+        if not os.path.exists(os.path.join(os.path.join(path, 'server'), '{}.py'.format('plugins'))):
+            fp = open(os.path.join(os.path.join(path, 'server'), '{}.py'.format('plugins')), 'w')
+            fp.write(templates.PLUGINS_ENTRY)
+            fp.close()
+            fp = open(os.path.join(os.path.join(path, 'server'), '__init__.py'), 'a')
+            fp.write(templates.IMPORTS.format('plugins'))
+            fp.close()
+
+
+@web_denied
+def try_create_middleware_entry(path):
+    if os.path.exists(os.path.join(path, 'server')):
+        if not os.path.exists(os.path.join(os.path.join(path, 'server'), '{}.py'.format('middleware'))):
+            fp = open(os.path.join(os.path.join(path, 'server'), '{}.py'.format('middleware')), 'w')
+            fp.write(templates.MIDDLEWARE_ENTRY)
+            fp.close()
+            fp = open(os.path.join(os.path.join(path, 'server'), '__init__.py'), 'a')
+            fp.write(templates.IMPORTS.format('middleware'))
+            fp.close()
+
+
+@web_denied
 def create_server(project, path, _inst_dir):
     if not os.path.exists(os.path.join(path, 'server')):
         create_dir(path, 'server')
@@ -205,6 +229,9 @@ def create_server(project, path, _inst_dir):
     try_create_error_controller(path)
     try_create_web_entry(path)
     try_create_ws_entry(path)
+    try_create_socket_entry(path)
+    try_create_plugins_entry(path)
+    try_create_middleware_entry(path)
     try_create_default_conf(path, project)
 
 

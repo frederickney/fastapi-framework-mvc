@@ -15,7 +15,6 @@ class Route(object):
         :return: Route object
         \"\"\"
         import controllers
-        return
 """
 
 HTTP_DEFAULT_ENTRY = """class Route(object):
@@ -31,7 +30,6 @@ HTTP_DEFAULT_ENTRY = """class Route(object):
         \"\"\"
         import controllers
         server.add_route(path='/', route=controllers.web.home.index, methods=["GET"], name='home')
-        return
 """
 
 HTTP_ERROR_HANDLER_ENTRY = """# coding: utf-8
@@ -51,7 +49,6 @@ class Route(object):
         \"\"\"
         import controllers
 {}
-        return
 """
 
 WS_ENTRY = """# coding: utf-8
@@ -59,14 +56,41 @@ WS_ENTRY = """# coding: utf-8
 
 class Handler(object):
 
-    def __init__(self, app):
+    def __init__(self, server):
         \"\"\"
 
-        :param app:
-        :type app: fastapi.FastAPI
+        :param server:
+        :type server: fastapi.FastAPI
         \"\"\"
         import controllers
-        return
+"""
+
+PLUGINS_ENTRY = """# coding: utf-8
+
+
+class Load(object):
+
+    def __init__(self, server):
+        \"\"\"
+
+        :param server:
+        :type server: fastapi.FastAPI
+        \"\"\"
+        import controllers
+"""
+
+MIDDLEWARE_ENTRY = """# coding: utf-8
+
+
+class Load(object):
+
+    def __init__(self, server):
+        \"\"\"
+
+        :param server:
+        :type server: fastapi.FastAPI
+        \"\"\"
+        import controllers
 """
 
 ERROR_ENTRY = """        server.add_exception_handler({}, {})\n"""
@@ -168,9 +192,14 @@ IMPORT_ROUTER_CONTROLLER = "from .{} import router as {}\n"
 IMPORT_ERROR = "from .{} import http_{}\n"
 
 HTTP_ERRORS = {
-    404: 'controllers.web.errors.http_404',
-    500: 'controllers.web.errors.http_500'
 }
+
+INSTALL_ROUTER = """        {}.include_router(router={})\n"""
+INSTALL_PREFIXED_ROUTER = """        {}.include_router(prefix="{}", router={})\n"""
+INSTALL_WEB_ROUTE = """        {}.add_route("/{}", {}, name="ui.{}")\n"""
+INSTALL_API_ROUTE = """        {}.add_api_route("/api/{}", {}, name="api.{}")\n"""
+INSTALL_WEBSOCKET_ROUTE = """        {}.add_websocket_route("/socket/{}", {}, name="socket.{}")\n"""
+
 
 FASTAPI_RENDERING_IMPORT = "from fastapi_framework_mvc.core import Process\nfrom fastapi.responses import HTMLResponse\n\n"
 
@@ -187,9 +216,4 @@ FASTAPI_FRAMEWORK_BASE_CONF = """SERVER:
     LOG:
         DIR: log
         LEVEL: debug
-
-DATABASES: {{}}
-
-FASTAPI:
-  CONFIG: {{}}
 """

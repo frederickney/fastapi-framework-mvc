@@ -6,12 +6,11 @@ __author__ = 'Frederick NEY'
 
 import os
 
-from fastapi_framework_mvc.utils import make_controller, make_middleware, make_project
+from fastapi_framework_mvc.utils import make_controller, make_middleware, make_project, install_routes
 
 
 def parser():
     import argparse
-    parser = argparse.ArgumentParser(description='FastAPI Framework MVC CLI')
     parser = argparse.ArgumentParser(description='FastAPI Framework MVC CLI', formatter_class=argparse.RawTextHelpFormatter)
     action = parser.add_subparsers(dest='action')
     project_parser = action.add_parser('project', help='Usage:\npython -m fastapi_framework_mvc.cli project -h', formatter_class=argparse.RawTextHelpFormatter)
@@ -42,6 +41,18 @@ def parser():
         required=True, 
         metavar='NAME'
     )
+    manager_parser = action.add_parser('manager', help='Usage:\npython -m fastapi_framework_mvc.cli manager -h', formatter_class=argparse.RawTextHelpFormatter)
+    manager_parser.add_argument(
+        '-l', '--link-controller', 
+        help='manage app routes\nexample:\npython -m fastapi_framework_mvc.cli manager --link-controller controllers/web/login', 
+        required=True
+    )
+    manager_parser.add_argument(
+        '-p', '--prefix', 
+        help='api prefix (only for api endpoints)', 
+        required=False,
+        default=None
+    )
     args = parser.parse_args()
     if args.action == 'project':
         make_project(os.getcwd(), args.create, os.path.dirname(os.path.realpath(__file__)))
@@ -52,6 +63,15 @@ def parser():
     elif args.action == "middleware":
         make_middleware(os.getcwd(), args.create)
         exit(0)
+    elif args.action == "manager":
+        install_routes(
+            os.getcwd(), 
+            args.link_controller, 
+            type=
+            'ws' if 'controllers/ws/' in args.link_controller else 
+            'socket' if 'socket/' in args.link_controller else 'web',
+            prefix=args.prefix
+        )
 
 
 if __name__ == '__main__':
