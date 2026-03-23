@@ -76,6 +76,50 @@ def http_{}(request, exc):
     return HTMLResponse(content="<h1>404</h1>", status_code=exc.status_code)
 """
 
+BASE_ROUTER_CONTROLLER = """
+# coding: utf-8
+
+from fastapi import APIRouter
+from fastapi import Request
+
+router = APIRouter(prefix="/{PREFIX}")
+
+class Controller(object):
+    \"\"\"
+    {PREFIX} Controller
+
+    Class that handles all kind of allowed operation on {PREFIX}.
+
+    Usualy get is for retrieving entries(y) with optional filter arguments, put is for creating new entry(ies),
+    post is for updating entry(ies) and delete for deleting.
+    \"\"\"
+    
+    #TODO add api route definition with api request model and return type
+    @staticmethod
+    @router.get("")
+    def retrieve(fastapi_request: Request):
+        #TODO implement your code here 
+        pass
+    
+    #TODO add api route definition with api request model and return type
+    @router.put("/create")
+    def create(fastapi_request: Request):
+        #TODO implement your code here 
+        pass
+        
+    #TODO add api route definition with api request model and return type
+    @router.post("/update")
+    def create(fastapi_request: Request):
+        #TODO implement your code here 
+        pass
+        
+    #TODO add api route definition with api request model and return type
+    @router.delete("/delete")
+    def create(fastapi_request: Request):
+        #TODO implement your code here 
+        pass
+"""
+
 BASE_CONTROLLER = """# coding: utf-8
 
 
@@ -118,6 +162,8 @@ class {}(object):
 IMPORTS = "from . import {}\n"
 
 IMPORT_CONTROLLER = "from .{} import Controller as {}\n"
+
+IMPORT_ROUTER_CONTROLLER = "from .{} import router as {}\n"
 
 IMPORT_ERROR = "from .{} import http_{}\n"
 

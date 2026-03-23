@@ -12,30 +12,45 @@ from fastapi_framework_mvc.utils import make_controller, make_middleware, make_p
 def parser():
     import argparse
     parser = argparse.ArgumentParser(description='FastAPI Framework MVC CLI')
-    parser.add_argument(
-        '-cp', '--create-project',
-        help='Create project\nexample:\npython -m fastapi_framework_mvc.cli --create-project webapp',
+    parser = argparse.ArgumentParser(description='FastAPI Framework MVC CLI', formatter_class=argparse.RawTextHelpFormatter)
+    action = parser.add_subparsers(dest='action')
+    project_parser = action.add_parser('project', help='Usage:\npython -m fastapi_framework_mvc.cli project -h', formatter_class=argparse.RawTextHelpFormatter)
+    project_parser.add_argument(
+        '-c', '--create', 
+        help='name of the project\nExample:\npython -m fastapi_framework_mvc.cli project --create webapp', 
+        required=True,
+        metavar='NAME'
+    )
+    controller_parser = action.add_parser('controller', help='Usage:\npython -m fastapi_framework_mvc.cli controller -h', formatter_class=argparse.RawTextHelpFormatter)
+    controller_parser.add_argument(
+        '-c', '--create', 
+        help='Create controller\nexample:\npython -m fastapi_framework_mvc.cli controller --create controllers/web/login', 
+        required=True, 
+        metavar='NAME'
+    )
+    controller_parser.add_argument(
+        '-router', '--router-mode', 
+        help='Create a router base controller', 
+        default=False, 
+        action='store_true', 
         required=False
     )
-    parser.add_argument(
-        '-cc', '--create-controller',
-        help='Create controller\nexample:\npython -m fastapi_framework_mvc.cli --create-controller controllers/web/login',
-        required=False
-    )
-    parser.add_argument(
-        '-cm', '--create-middleware',
-        help='Create middleware\nexample:\npython -m fastapi_framework_mvc.cli --create-middleware test',
-        required=False
+    middleware_parser = action.add_parser('middleware', help='Usage:\npython -m fastapi_framework_mvc.cli middleware -h', formatter_class=argparse.RawTextHelpFormatter)
+    middleware_parser.add_argument(
+        '-c', '--create', 
+        help='Create middleware\nexample:\npython -m fastapi_framework_mvc.cli middleware --create my_middleware', 
+        required=True, 
+        metavar='NAME'
     )
     args = parser.parse_args()
-    if args.create_project:
-        make_project(os.getcwd(), args.create_project, os.path.dirname(os.path.realpath(__file__)))
+    if args.action == 'project':
+        make_project(os.getcwd(), args.create, os.path.dirname(os.path.realpath(__file__)))
         exit(0)
-    elif args.create_controller:
-        make_controller(os.getcwd(), args.create_controller)
+    elif args.action == 'controller':
+        make_controller(os.getcwd(), args.create, router=args.router_mode)
         exit(0)
-    elif args.create_middleware:
-        make_middleware(os.getcwd(), args.create_middleware)
+    elif args.action == "middleware":
+        make_middleware(os.getcwd(), args.create)
         exit(0)
 
 

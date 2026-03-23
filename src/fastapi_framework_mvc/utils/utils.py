@@ -28,21 +28,29 @@ def make_middleware(basepath, middleware):
 
 
 @web_denied
-def make_controller(basepath, controller):
+def make_controller(basepath, controller, router=False):
     generate(basepath, controller)
     fp = open(
         os.path.join(os.path.join(basepath, os.path.dirname(controller)), "{}.py".format(os.path.basename(controller))),
         "w"
     )
-    fp.write(templates.BASE_CONTROLLER)
+    if not router:
+        fp.write(templates.BASE_CONTROLLER)
+    else: 
+        fp.write(templates.BASE_ROUTER_CONTROLLER.format(PREFIX=controller.split('/')[-1]))
     fp.close()
     fp = open(
         os.path.join(os.path.join(basepath, os.path.dirname(controller)), '__init__.py'),
         "a"
     )
-    fp.write(templates.IMPORT_CONTROLLER.format(
-        os.path.basename(controller), os.path.basename(controller)
-    ))
+    if not router:
+        fp.write(templates.IMPORT_CONTROLLER.format(
+            os.path.basename(controller), os.path.basename(controller)
+        ))
+    else:
+        fp.write(templates.IMPORT_ROUTER_CONTROLLER.format(
+            os.path.basename(controller), os.path.basename(controller)
+        ))
     fp.close()
 
 
