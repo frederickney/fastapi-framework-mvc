@@ -4,6 +4,7 @@
 __author__ = "Frederick NEY"
 
 import os
+import logging
 import inspect
 import importlib
 import re
@@ -20,12 +21,24 @@ def make_auth():
 
 @web_denied
 def make_middleware(basepath, middleware):
-    if not os.path.exists(os.path.join(os.path.join(basepath, 'server'), 'middleware.py')):
-        fp = open(os.path.join(os.path.join(basepath, 'server'), 'middleware.py'), "w")
+    generate(basepath, f"middlewares/{middleware.lower()}", skip_root_level_init=False)
+    if not os.path.exists(os.path.join(os.path.join(basepath, 'middlewares'), f'{middleware.lower()}.py')):
+        logging.debug(f'Generating middlewares/{middleware.lower()}.py...')
+        fp = open(os.path.join(os.path.join(basepath, 'middlewares'), f'{middleware.lower()}.py'), "w")
         fp.write(templates.PYTHON_FILE_HEAD)
     else:
-        fp = open(os.path.join(os.path.join(basepath, 'server'), 'middleware.py'), "a")
-    fp.write(templates.BASE_MIDDLEWARE.format(middleware))
+        logging.debug(f'Updating middlewares/{middleware.lower()}.py...')
+        fp = open(os.path.join(os.path.join(basepath, 'middlewares'), f'{middleware.lower()}.py'), "a")
+    fp.write(templates.BASE_MIDDLEWARE.format(os.path.basename(middleware)))
+    fp.close()
+    logging.debug(f'Updating middlewares/{os.path.dirname(middleware)}/__init__.py...')
+    fp = open(
+        os.path.join(os.path.join(basepath, 'middlewares',  os.path.dirname(middleware)), '__init__.py'),
+        "a"
+    )
+    fp.write(templates.IMPORT_MIDDLEWARE.format(
+        os.path.basename(middleware).lower().replace('/', '.'), os.path.basename(middleware)
+    ))
     fp.close()
     pass
 
@@ -33,6 +46,7 @@ def make_middleware(basepath, middleware):
 @web_denied
 def make_controller(basepath, controller, router=False):
     generate(basepath, controller)
+    logging.debug(f'Generating {controller}.py...')
     fp = open(
         os.path.join(os.path.join(basepath, os.path.dirname(controller)), "{}.py".format(os.path.basename(controller))),
         "w"
@@ -42,6 +56,7 @@ def make_controller(basepath, controller, router=False):
     else: 
         fp.write(templates.BASE_ROUTER_CONTROLLER.format(PREFIX=controller.split('/')[-1]))
     fp.close()
+    logging.debug(f'Updating {os.path.dirname(controller)}/__init__.py...')
     fp = open(
         os.path.join(os.path.join(basepath, os.path.dirname(controller)), '__init__.py'),
         "a"
@@ -73,6 +88,7 @@ def _install_router(basepath, controller, type, prefix=None):
     :param type: type of route (web, ws or socket) 
     :type type: str
     """
+    logging.debug(f'Reading server/{type}.py...')
     fd = open(f'server/{type}.py', 'r')
     content = fd.read() 
     fd.close()
@@ -83,9 +99,12 @@ def _install_router(basepath, controller, type, prefix=None):
         _content = content[:-1]
         _ends = content[-1:]
     if not prefix:
+        logging.debug(f'Adding server/{templates.INSTALL_ROUTER.format('server', controller.replace('/', '.')).replace('\n', '')}...')
         new_content = f"{_content}{templates.INSTALL_ROUTER.format('server', controller.replace('/', '.'))}{_ends}"
     else:
+        logging.debug(f'Adding server/{templates.INSTALL_PREFIXED_ROUTER.format('server', prefix, controller.replace('/', '.')).replace('\n', '')}...')
         new_content = f"{_content}{ templates.INSTALL_PREFIXED_ROUTER.format('server', prefix, controller.replace('/', '.'))}{_ends}"
+    logging.debug(f'Saving server/{type}.py...')
     fd = open(f'server/{type}.py', 'w')
     fd.write(new_content)
     fd.close()
@@ -104,6 +123,7 @@ def _install_controller(basepath, controller, methods, type):
     :param type: type of route (web, ws or socket) 
     :type type: str
     """
+    logging.debug(f'Reading server/{type}.py...')
     fd = open(f'server/{type}.py', 'r')
     content = fd.read() 
     fd.close()
@@ -116,16 +136,21 @@ def _install_controller(basepath, controller, methods, type):
     new_content = f"{_content}"
     for method in methods:
         if type == 'ws':
+            logging.debug(f'Adding server/{templates.INSTALL_PREFIXED_ROUTER.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}").replace('\n', '')}...')
             new_content += templates.INSTALL_API_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}")
         elif type =='socket':
+            logging.debug(f'Adding server/{templates.INSTALL_WEBSOCKET_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}").replace('\n', '')}...')
             new_content += templates.INSTALL_WEBSOCKET_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}")
         elif type == 'errorhandler':
             e_code = re.findall('(\\d+)', method)[0]
+            logging.debug(f'Adding server/{templates.INSTALL_ERRORS_ROUTE.format('server', e_code, f"{controller.replace('/', '.')}.{method}").replace('\n', '')}...')
             new_content += templates.INSTALL_ERRORS_ROUTE.format('server', e_code, f"{controller.replace('/', '.')}.{method}")
         else: 
+            logging.debug(f'Adding server/{templates.INSTALL_WEB_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}").replace('\n', '')}...')
             new_content += templates.INSTALL_WEB_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}")
     if _ends != '\n':
         new_content += f"{_ends}"
+    logging.debug(f'Saving server/{type}.py...')
     fd = open(f'server/{type}.py', 'w')
     fd.write(new_content)
     fd.close()
@@ -139,9 +164,11 @@ def install_routes(basepath, controller, type, prefix=None):
     if os.path.exists(os.path.join(basepath, os.path.dirname(controller))):
         module = importlib.import_module(controller.replace('/', '.'))
         if 'router' in dir(module):
+            logging.debug(f'Installing router {controller}...')
             #TODO edit server/{type}.py to install router
             _install_router(basepath, controller, type, prefix=prefix)
         elif 'Controller' in dir(module):
+            logging.debug(f'Installing controller {controller}...')
             #TODO edit server/{type}.py to install controller by looping on static or class method
             methods = [
                 func for func in dir(module.Controller) 

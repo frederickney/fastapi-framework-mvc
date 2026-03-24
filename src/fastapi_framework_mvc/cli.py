@@ -5,6 +5,7 @@
 __author__ = 'Frederick NEY'
 
 import os
+import sys
 
 from fastapi_framework_mvc.utils import make_controller, make_middleware, make_project, install_routes
 
@@ -58,18 +59,33 @@ def parser():
         make_project(os.getcwd(), args.create, os.path.dirname(os.path.realpath(__file__)))
         exit(0)
     elif args.action == 'controller':
-        make_controller(os.getcwd(), args.create, router=args.router_mode)
+        controller = args.create
+        if sys.platform.startswith('win') or sys.platform.startswith('nt'):
+            controller = controller.replace('\\', '/')
+        if controller.startswith('./'):
+            controller = controller.removeprefix('./')
+        make_controller(os.getcwd(), controller, router=args.router_mode)
         exit(0)
     elif args.action == "middleware":
-        make_middleware(os.getcwd(), args.create)
+        middleware = args.create
+        if sys.platform.startswith('win') or sys.platform.startswith('nt'):
+            middleware = middleware.replace('\\', '/')
+        if middleware.startswith('./'):
+            middleware = middleware.removeprefix('./')
+        make_middleware(os.getcwd(), middleware)
         exit(0)
     elif args.action == "manager":
+        controller = args.link_controller
+        if sys.platform.startswith('win') or sys.platform.startswith('nt'):
+            controller = controller.replace('\\', '/')
+        if controller.startswith('./'):
+            controller = controller.removeprefix('./')
         install_routes(
-            os.getcwd(), 
-            args.link_controller, 
+            os.getcwd(),
+            controller, 
             type=
             'ws' if 'controllers/ws/' in args.link_controller else 
-            'socket' if 'socket/' in args.link_controller else
+            'socket' if 'controllers/socket/' in args.link_controller else
             'errorhandler' if 'errors' in args.link_controller else 'web',
             prefix=args.prefix
         )

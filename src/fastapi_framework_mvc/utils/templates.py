@@ -189,6 +189,8 @@ IMPORT_CONTROLLER = "from .{} import Controller as {}\n"
 
 IMPORT_ROUTER_CONTROLLER = "from .{} import router as {}\n"
 
+IMPORT_MIDDLEWARE = "from .{} import {}\n"
+
 IMPORT_ERROR = "from .{} import http_{}\n"
 
 HTTP_ERRORS = {
