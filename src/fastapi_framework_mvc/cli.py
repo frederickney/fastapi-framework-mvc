@@ -69,7 +69,8 @@ def parser():
             args.link_controller, 
             type=
             'ws' if 'controllers/ws/' in args.link_controller else 
-            'socket' if 'socket/' in args.link_controller else 'web',
+            'socket' if 'socket/' in args.link_controller else
+            'errorhandler' if 'errors' in args.link_controller else 'web',
             prefix=args.prefix
         )
 

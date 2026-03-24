@@ -6,6 +6,7 @@ __author__ = "Frederick NEY"
 import os
 import inspect
 import importlib
+import re
 
 from fastapi_framework_mvc.exceptions.runtime import web_denied
 from . import templates
@@ -110,14 +111,17 @@ def _install_controller(basepath, controller, methods, type):
         _content = content[:-15]
         _ends = content[-15:]
     else:
-        _content = content[:-1]
-        _ends = content[-1:]
+        _content = content
+        _ends = ''
     new_content = f"{_content}"
     for method in methods:
         if type == 'ws':
             new_content += templates.INSTALL_API_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}")
         elif type =='socket':
             new_content += templates.INSTALL_WEBSOCKET_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}")
+        elif type == 'errorhandler':
+            e_code = re.findall('(\\d+)', method)[0]
+            new_content += templates.INSTALL_ERRORS_ROUTE.format('server', e_code, f"{controller.replace('/', '.')}.{method}")
         else: 
             new_content += templates.INSTALL_WEB_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}")
     if _ends != '\n':

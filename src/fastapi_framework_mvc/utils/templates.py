@@ -199,7 +199,7 @@ INSTALL_PREFIXED_ROUTER = """        {}.include_router(prefix="{}", router={})\n
 INSTALL_WEB_ROUTE = """        {}.add_route("/{}", {}, name="ui.{}")\n"""
 INSTALL_API_ROUTE = """        {}.add_api_route("/api/{}", {}, name="api.{}")\n"""
 INSTALL_WEBSOCKET_ROUTE = """        {}.add_websocket_route("/socket/{}", {}, name="socket.{}")\n"""
-
+INSTALL_ERRORS_ROUTE= """        {}.add_exception_handler({}, {})\n"""
 
 FASTAPI_RENDERING_IMPORT = "from fastapi_framework_mvc.core import Process\nfrom fastapi.responses import HTMLResponse\n\n"
 
