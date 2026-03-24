@@ -100,8 +100,8 @@ def routes_loader(package, app):
     Used to load routes for each registered extensions
     :param package: name of the application extensions module
     :type package: str
-    :param app: flask base application
-    :type app: flask.Flask
+    :param app: fastapi base application
+    :type app: fastapi.FastAPI
     :return :
     """
     research = re.compile(_pattern, re.IGNORECASE)
@@ -133,8 +133,8 @@ def load_routes(package, ext, app):
     :type package: str
     :param ext: name of the extension
     :type ext: str
-    :param app: flask base application
-    :type app: flask.Flask
+    :param app: fastapi base application
+    :type app: fastapi.FastAPI
     :return :
     """
     try:
@@ -156,14 +156,14 @@ def load_routes(package, ext, app):
         pass
 
 
-def blueprints_loader(package, app):
+def routers_loader(package, app):
     """
 
     Used to load blueprints for each registered extensions
     :param package: name of the application extensions module
     :type package: str
-    :param app: flask base application
-    :type app: flask.Flask
+    :param app: fastapi base application
+    :type app: fastapi.FastAPI
     :return :
     """
     research = re.compile(_pattern, re.IGNORECASE)
@@ -195,8 +195,8 @@ def load_blueprints(package, ext, app):
     :type package: str
     :param ext: name of the extension
     :type ext: str
-    :param app: flask base application
-    :type app: flask.Flask
+    :param app: fastapi base application
+    :type app: fastapi.FastAPI
     :return :
     """
     try:

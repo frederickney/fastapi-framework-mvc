@@ -29,7 +29,7 @@ from fastapi_framework_mvc.core import Process
 from fastapi_framework_mvc.core.logging import setup_file_logging, configure_basic_logger
 from fastapi_framework_mvc.core.process import number_of_workers
 
-parser = argparse.ArgumentParser(description='Python FLASK USGI server')
+parser = argparse.ArgumentParser(description='Python FastAPI ASGI server')
 parser.add_argument(
     '-d', '--disable-log-files',
     action='store_true',

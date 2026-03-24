@@ -12,14 +12,14 @@ class Loader(object):
     @classmethod
     def load(cls, _ext=None):
         from . import loader
-        from flask_framework.database import Database
-        from flask_framework.core import Process
+        from fastapi_framework_mvc.database import Database
+        from fastapi_framework_mvc.core import Process
         import logging
         logging.info('Loading plugins')
         loader.modules_loader(_ext or 'extensions')
         loader.init_modules(_ext or 'extensions', db=Database)
         loader.routes_loader(_ext or 'extensions', app=Process.get())
-        loader.blueprints_loader(_ext or 'extensions', app=Process.get())
+        loader.routers_loader(_ext or 'extensions', app=Process.get())
         cls.__loaded__ = True
         logging.info('Plugins loaded')
         return
@@ -27,14 +27,14 @@ class Loader(object):
     @classmethod
     def reload(cls, _ext=None):
         from . import loader
-        from flask_framework.database import Database
-        from flask_framework.core import Process
+        from fastapi_framework_mvc.database import Database
+        from fastapi_framework_mvc.core import Process
         import logging
         logging.info('Reloading plugins')
         loader.modules_reloader(_ext or 'extensions')
         loader.init_modules(_ext or 'extensions', db=Database)
         loader.routes_loader(_ext or 'extensions', app=Process.get())
-        loader.blueprints_loader(_ext or 'extensions', app=Process.get())
+        loader.routers_loader(_ext or 'extensions', app=Process.get())
 
     @classmethod
     def loaded(cls):
@@ -45,7 +45,7 @@ def all(_ext=None):
     import re
     import os
     import importlib
-    from flask_framework.config import Environment
+    from fastapi_framework_mvc.config import Environment
     research = re.compile(
         '^([a-zA-Z]+(_[a-zA-Z]+)*)$',
         re.IGNORECASE
@@ -70,7 +70,7 @@ def all(_ext=None):
 
 
 def load():
-    from flask_framework.config import Environment
+    from fastapi_framework_mvc.config import Environment
     if pathlib.Path(Environment.SERVER.get('extensions', {}).get('path', 'extensions')).is_dir():
         ext = Environment.SERVER.get('extensions', {}).get('path', 'extensions')
         Loader.load(ext) if not Loader.loaded() else Loader.reload(ext)
