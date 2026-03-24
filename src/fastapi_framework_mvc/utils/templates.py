@@ -100,8 +100,7 @@ def http_{}(request, exc):
     return HTMLResponse(content="<h1>404</h1>", status_code=exc.status_code)
 """
 
-BASE_ROUTER_CONTROLLER = """
-# coding: utf-8
+BASE_ROUTER_CONTROLLER = """# coding: utf-8
 
 from fastapi import APIRouter
 from fastapi import Request

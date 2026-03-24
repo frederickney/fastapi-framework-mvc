@@ -84,9 +84,9 @@ def parser():
             os.getcwd(),
             controller, 
             type=
-            'ws' if 'controllers/ws/' in args.link_controller else 
-            'socket' if 'controllers/socket/' in args.link_controller else
-            'errorhandler' if 'errors' in args.link_controller else 'web',
+            'ws' if 'controllers/ws/' in controller else 
+            'socket' if 'controllers/socket/' in controller else
+            'errorhandler' if 'errors' in controller else 'web',
             prefix=args.prefix
         )
 

@@ -52,24 +52,24 @@ def generate(basepath, module, sub_module=None, skip_root_level_init=False):
             while not os.path.exists(os.path.join(basepath, module)):
                 "Waiting for path creation"
     if sub_module is not None:
-        if os.path.exists(os.path.join(os.path.join(basepath, module), '__init__.py')):
-            logging.debug(f'Updating {os.path.dirname(module)}/__init__.py...')
+        if os.path.exists(os.path.join(os.path.join(basepath, os.path.dirname(module)), '__init__.py')):
+            logging.debug(f'Updating {os.path.dirname(os.path.dirname(module))}/__init__.py...')
             fp = open(
                 os.path.join(os.path.join(basepath, os.path.dirname(module)), '__init__.py'),
                 "a"
             )
-            fp.write(templates.IMPORTS.format(sub_module.split("/")[-1]))
+            fp.write(templates.IMPORTS.format(os.path.basename(module)))
             fp.close()
         else:
-            logging.debug(f'Generating {module}/__init__.py...')
+            logging.debug(f'Generating { os.path.dirname(module)}/__init__.py...')
             fp = open(
-                os.path.join(os.path.join(basepath, module), '__init__.py'),
+                os.path.join(os.path.join(basepath, os.path.dirname(module)), '__init__.py'),
                 "w"
             )
             fp.write(templates.PYTHON_FILE_HEAD)
-            fp.write(templates.IMPORTS.format(sub_module.split("/")[-1]))
+            fp.write(templates.IMPORTS.format(os.path.basename(module)))
             fp.close()
-    else:
+    elif not skip_root_level_init:
         if not os.path.exists(
                 os.path.join(os.path.join(basepath, os.path.dirname(module)), '__init__.py')
         ):

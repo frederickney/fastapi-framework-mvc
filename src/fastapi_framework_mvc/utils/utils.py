@@ -21,7 +21,7 @@ def make_auth():
 
 @web_denied
 def make_middleware(basepath, middleware):
-    generate(basepath, f"middlewares/{middleware.lower()}", skip_root_level_init=False)
+    generate(basepath, f"middlewares/{middleware.lower()}", skip_root_level_init=True)
     if not os.path.exists(os.path.join(os.path.join(basepath, 'middlewares'), f'{middleware.lower()}.py')):
         logging.debug(f'Generating middlewares/{middleware.lower()}.py...')
         fp = open(os.path.join(os.path.join(basepath, 'middlewares'), f'{middleware.lower()}.py'), "w")
@@ -36,6 +36,7 @@ def make_middleware(basepath, middleware):
         os.path.join(os.path.join(basepath, 'middlewares',  os.path.dirname(middleware)), '__init__.py'),
         "a"
     )
+    fp.write(templates.PYTHON_FILE_HEAD)
     fp.write(templates.IMPORT_MIDDLEWARE.format(
         os.path.basename(middleware).lower().replace('/', '.'), os.path.basename(middleware)
     ))
@@ -96,8 +97,8 @@ def _install_router(basepath, controller, type, prefix=None):
         _content = content[:-15]
         _ends = content[-15:]
     else:
-        _content = content[:-1]
-        _ends = content[-1:]
+        _content = content
+        _ends = ''
     if not prefix:
         logging.debug(f'Adding server/{templates.INSTALL_ROUTER.format('server', controller.replace('/', '.')).replace('\n', '')}...')
         new_content = f"{_content}{templates.INSTALL_ROUTER.format('server', controller.replace('/', '.'))}{_ends}"
@@ -139,7 +140,7 @@ def _install_controller(basepath, controller, methods, type):
             logging.debug(f'Adding server/{templates.INSTALL_PREFIXED_ROUTER.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}").replace('\n', '')}...')
             new_content += templates.INSTALL_API_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}")
         elif type =='socket':
-            logging.debug(f'Adding server/{templates.INSTALL_WEBSOCKET_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}").replace('\n', '')}...')
+            logging.debug(f'Adding {templates.INSTALL_WEBSOCKET_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}").replace('\n', '')}...')
             new_content += templates.INSTALL_WEBSOCKET_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}")
         elif type == 'errorhandler':
             e_code = re.findall('(\\d+)', method)[0]
@@ -148,8 +149,7 @@ def _install_controller(basepath, controller, methods, type):
         else: 
             logging.debug(f'Adding server/{templates.INSTALL_WEB_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}").replace('\n', '')}...')
             new_content += templates.INSTALL_WEB_ROUTE.format('server', f"{os.path.basename(controller)}/{method}", f"{controller.replace('/', '.')}.{method}", f"{os.path.basename(controller)}.{method}")
-    if _ends != '\n':
-        new_content += f"{_ends}"
+    new_content += f"{_ends}"
     logging.debug(f'Saving server/{type}.py...')
     fd = open(f'server/{type}.py', 'w')
     fd.write(new_content)
