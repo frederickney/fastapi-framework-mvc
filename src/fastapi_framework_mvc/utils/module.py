@@ -60,7 +60,7 @@ def generate(basepath, module, sub_module=None, skip_root_level_init=False):
             )
             fp.write(templates.IMPORTS.format(os.path.basename(module)))
             fp.close()
-        else:
+        elif os.path.dirname(module) != '' and os.path.dirname(module) is not None:
             logging.debug(f'Generating { os.path.dirname(module)}/__init__.py...')
             fp = open(
                 os.path.join(os.path.join(basepath, os.path.dirname(module)), '__init__.py'),
