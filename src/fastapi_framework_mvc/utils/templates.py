@@ -105,7 +105,9 @@ BASE_ROUTER_CONTROLLER = """# coding: utf-8
 from fastapi import APIRouter
 from fastapi import Request
 
+
 router = APIRouter(prefix="/{PREFIX}")
+
 
 class Controller(object):
     \"\"\"
