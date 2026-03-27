@@ -27,7 +27,7 @@ DATABASES:
     password: "replace this with your database user's password"
     database: "replace this with your database name"
     address: "replace this with your hostname"
-    models: "mysql (python module that require to be put under Models.Persistent module)"
+    models: "mysql (python module that require to be put under models.persistent module)"
     readonly: false
 ...
 ```
@@ -43,7 +43,7 @@ DATABASES:
     password: "replace this with your database user's password"
     database: "replace this with your database name"
     address: "replace this with your hostname"
-    models: "informix (python module that require to be put under Models.Persistent module)"
+    models: "informix (python module that require to be put under models.persistent module)"
     params:
       SERVER: "replace with your server name"
       CLIENT_LOCALE: "replace with your client locale"
@@ -182,7 +182,7 @@ The file based that contain your view functions must must also be imported into 
 
 you can create SQLAlchemy models by creating a new module under the ```models.persistent``` module and place each models inside your module that you previously created. 
 
-The models that you register into the app must be an ```database.Model ``` or ```database.get_models_by_name('replace that with your database connection name')``` object, you could import this object using the following line into your database model:
+The models that you register into the app must be an ```fastapi_framework_mvc.database.Model ``` or ```fastapi_framework_mvc.database.get_models_by_name('replace that with your database connection name')``` object, you could import this object using the following line into your database model:
 
 
 ```python
@@ -280,12 +280,12 @@ CLI interface:
 * Powershell
 
 ```powershell
-fastapi_framework.cli -h
+fastapi_framework_mvc.cli -h
 ```
 * Bash
 
 ```bash
-fastapi_framework.cli -h
+fastapi_framework_mvc.cli -h
 ```
 
 * Python module
