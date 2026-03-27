@@ -197,9 +197,9 @@ HTTP_ERRORS = {
 
 INSTALL_ROUTER = """        {}.include_router(router={})\n"""
 INSTALL_PREFIXED_ROUTER = """        {}.include_router(prefix="{}", router={})\n"""
-INSTALL_WEB_ROUTE = """        {}.add_route("/{}", {}, name="ui.{}")\n"""
-INSTALL_API_ROUTE = """        {}.add_api_route("/api/{}", {}, name="api.{}")\n"""
-INSTALL_WEBSOCKET_ROUTE = """        {}.add_websocket_route("/socket/{}", {}, name="socket.{}")\n"""
+INSTALL_WEB_ROUTE = """        {}.add_route("/{}", {}, name="ui:{}")\n"""
+INSTALL_API_ROUTE = """        {}.add_api_route("/api/{}", {}, name="api:{}")\n"""
+INSTALL_WEBSOCKET_ROUTE = """        {}.add_websocket_route("/socket/{}", {}, name="socket:{}")\n"""
 INSTALL_ERRORS_ROUTE= """        {}.add_exception_handler({}, {})\n"""
 
 FASTAPI_RENDERING_IMPORT = "from fastapi_framework_mvc.core import Process\nfrom fastapi.responses import HTMLResponse\n\n"
@@ -218,3 +218,6 @@ FASTAPI_FRAMEWORK_BASE_CONF = """SERVER:
         DIR: log
         LEVEL: debug
 """
+
+DATABASE_MODELS_IMPORTS = """from . import *\n"""
+DATABASE_IMPORTS = """from . import {}\n"""

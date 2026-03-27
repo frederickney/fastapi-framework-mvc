@@ -11,7 +11,7 @@ import re
 
 from fastapi_framework_mvc.exceptions.runtime import web_denied
 from . import templates
-from .module import generate, create_project, create_server, create_fastapi_entrypoint
+from .module import generate, create_project, create_server, create_fastapi_entrypoint, create_dir
 
 
 @web_denied
@@ -31,17 +31,18 @@ def make_middleware(basepath, middleware):
         fp = open(os.path.join(os.path.join(basepath, 'middlewares'), f'{middleware.lower()}.py'), "a")
     fp.write(templates.BASE_MIDDLEWARE.format(os.path.basename(middleware)))
     fp.close()
-    logging.debug(f'Updating middlewares/{os.path.dirname(middleware)}/__init__.py...')
+    if os.path.dirname(middleware) != '' and os.path.dirname(middleware) is not None:
+        logging.debug(f'Updating middlewares/{os.path.dirname(middleware)}/__init__.py...')
+    else:
+        logging.debug(f'Updating middlewares/__init__.py...')
     fp = open(
         os.path.join(os.path.join(basepath, 'middlewares',  os.path.dirname(middleware)), '__init__.py'),
         "a"
     )
-    fp.write(templates.PYTHON_FILE_HEAD)
     fp.write(templates.IMPORT_MIDDLEWARE.format(
         os.path.basename(middleware).lower().replace('/', '.'), os.path.basename(middleware)
     ))
     fp.close()
-    pass
 
 
 @web_denied
@@ -179,3 +180,35 @@ def install_routes(basepath, controller, type, prefix=None):
             print('Unable to install {} routes'.format(controller))
     else:
         print('Unable to install {} routes'.format(controller))
+
+
+@web_denied
+def create_database_models_modules(basepath, databases):
+    for name, setup in databases.items():
+        generate(basepath, f"models/persistent/{setup['models']}", )
+        if not os.path.exists(os.path.join(os.path.join(basepath, 'models/persistent'), setup['models'])):
+            logging.debug(f'Generating models/persistent/{setup['models']}...')
+            create_dir(basepath, os.path.join("models/persistent", setup['models']))
+            fp = open(os.path.join(os.path.join(basepath, 'models/persistent/'), setup['models'],  f'__init__.py'), "w")
+            fp.write(templates.PYTHON_FILE_HEAD)
+            fp.write(templates.DATABASE_MODELS_IMPORTS)
+            fp.close()
+            logging.debug(f'Updating models/persistent/{setup['models']}/__init__.py...')
+        if not os.path.exists(os.path.join(os.path.join(basepath, 'models/persistent', '__init__.py'))):
+            fp = open(
+                os.path.join(basepath, 'models/persistent', '__init__.py'),
+                "w"
+            )
+            fp.write(templates.PYTHON_FILE_HEAD)
+        else:
+            fp = open(
+                os.path.join(basepath, 'models/persistent', '__init__.py'),
+                "a"
+            )
+        sourcefd = open(os.path.join(basepath, 'models/persistent', '__init__.py'), 'r')
+        source = sourcefd.read()
+        sourcefd.close
+        if not templates.DATABASE_IMPORTS.format(setup['models']).replace('\n', '') in source:
+            fp.write(templates.DATABASE_IMPORTS.format(setup['models']))
+        fp.close()
+        pass
