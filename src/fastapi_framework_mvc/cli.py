@@ -12,12 +12,11 @@ from fastapi_framework_mvc.utils import make_controller, make_middleware, make_p
 from fastapi_framework_mvc.config import Environment
 
 
-def app_parser(parser):
-    database_parser = parser.add_parser('database', help='Usage:\npython -m fastapi_framework_mvc.cli database -h', formatter_class=argparse.RawTextHelpFormatter)
+def app_parser(database_parser):
     database_parser.add_argument(
-        '-i', '--init',
+        '-c', '--create-module',
         help='Create base sqlalchemy database models module for database-connector-kit python module\nThis can be also linked to alembic database migration python module.',
-        required=True,
+        required=False,
         action='store_true'
     )
 
@@ -65,8 +64,16 @@ def parser():
         required=False,
         default=None
     )
-    if len(Environment.Databases.keys()) > 0:
-        app_parser(action)
+    if len(Environment.SERVER.keys()) > 0:
+        database_parser = action.add_parser('database', help='Usage:\npython -m flask_framework.cli database -h', formatter_class=argparse.RawTextHelpFormatter)
+        database_parser.add_argument(
+            '-n', '--new',
+            help='Create new database connection configuration within the configuration file',
+            required=False,
+            action='store_true'
+        )
+        if len(Environment.Databases.keys()) > 0:
+            app_parser(database_parser)
     args = parser.parse_args()
     if args.action == 'project':
         make_project(os.getcwd(), args.create, os.path.dirname(os.path.realpath(__file__)))
@@ -103,10 +110,16 @@ def parser():
             prefix=args.prefix
         )
         exit(0)
-    elif len(Environment.Databases.keys()) > 0:
+    elif len(Environment.SERVER.keys()) > 0:
         if args.action == "database":
-            create_database_models_modules(os.getcwd(), Environment.Databases)
-            exit(0)
+            if args.new:
+                Environment.Databases = create_database_conf(Environment.Databases)
+                Environment.update_conf_file(os.environ.get('CONFIG_FILE'))
+                exit(0)
+            elif len(Environment.Databases.keys()) > 0:
+                if args.create_module:
+                    create_database_models_modules(os.getcwd(), Environment.Databases)
+                    exit(0)
 
 
 
