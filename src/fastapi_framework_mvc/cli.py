@@ -8,7 +8,7 @@ import argparse
 import os
 import sys
 
-from fastapi_framework_mvc.utils import make_controller, make_middleware, make_project, install_routes, create_database_models_modules
+from fastapi_framework_mvc.utils import make_controller, make_middleware, make_project, install_routes, create_database_models_modules, create_database_conf
 from fastapi_framework_mvc.config import Environment
 
 
