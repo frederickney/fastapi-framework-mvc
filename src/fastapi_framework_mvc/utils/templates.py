@@ -15,7 +15,6 @@ class Route(object):
         :return: Route object
         \"\"\"
         import controllers
-        return
 """
 
 HTTP_DEFAULT_ENTRY = """class Route(object):
@@ -31,7 +30,6 @@ HTTP_DEFAULT_ENTRY = """class Route(object):
         \"\"\"
         import controllers
         server.add_route(path='/', route=controllers.web.home.index, methods=["GET"], name='home')
-        return
 """
 
 HTTP_ERROR_HANDLER_ENTRY = """# coding: utf-8
@@ -51,7 +49,6 @@ class Route(object):
         \"\"\"
         import controllers
 {}
-        return
 """
 
 WS_ENTRY = """# coding: utf-8
@@ -59,14 +56,41 @@ WS_ENTRY = """# coding: utf-8
 
 class Handler(object):
 
-    def __init__(self, app):
+    def __init__(self, server):
         \"\"\"
 
-        :param app:
-        :type app: fastapi.FastAPI
+        :param server:
+        :type server: fastapi.FastAPI
         \"\"\"
         import controllers
-        return
+"""
+
+PLUGINS_ENTRY = """# coding: utf-8
+
+
+class Load(object):
+
+    def __init__(self, server):
+        \"\"\"
+
+        :param server:
+        :type server: fastapi.FastAPI
+        \"\"\"
+        import controllers
+"""
+
+MIDDLEWARE_ENTRY = """# coding: utf-8
+
+
+class Load(object):
+
+    def __init__(self, server):
+        \"\"\"
+
+        :param server:
+        :type server: fastapi.FastAPI
+        \"\"\"
+        import controllers
 """
 
 ERROR_ENTRY = """        server.add_exception_handler({}, {})\n"""
@@ -74,6 +98,51 @@ ERROR_ENTRY = """        server.add_exception_handler({}, {})\n"""
 BASE_ERROR = """
 def http_{}(request, exc):
     return HTMLResponse(content="<h1>404</h1>", status_code=exc.status_code)
+"""
+
+BASE_ROUTER_CONTROLLER = """# coding: utf-8
+
+from fastapi import APIRouter
+from fastapi import Request
+
+
+router = APIRouter(prefix="/{PREFIX}")
+
+
+class Controller(object):
+    \"\"\"
+    {PREFIX} Controller
+
+    Class that handles all kind of allowed operation on {PREFIX}.
+
+    Usualy get is for retrieving entries(y) with optional filter arguments, put is for creating new entry(ies),
+    post is for updating entry(ies) and delete for deleting.
+    \"\"\"
+    
+    #TODO add api route definition with api request model and return type
+    @staticmethod
+    @router.get("")
+    def retrieve(fastapi_request: Request):
+        #TODO implement your code here 
+        pass
+    
+    #TODO add api route definition with api request model and return type
+    @router.put("/create")
+    def create(fastapi_request: Request):
+        #TODO implement your code here 
+        pass
+        
+    #TODO add api route definition with api request model and return type
+    @router.post("/update")
+    def create(fastapi_request: Request):
+        #TODO implement your code here 
+        pass
+        
+    #TODO add api route definition with api request model and return type
+    @router.delete("/delete")
+    def create(fastapi_request: Request):
+        #TODO implement your code here 
+        pass
 """
 
 BASE_CONTROLLER = """# coding: utf-8
@@ -119,12 +188,21 @@ IMPORTS = "from . import {}\n"
 
 IMPORT_CONTROLLER = "from .{} import Controller as {}\n"
 
+IMPORT_ROUTER_CONTROLLER = "from .{} import router as {}\n"
+
+IMPORT_MIDDLEWARE = "from .{} import {}\n"
+
 IMPORT_ERROR = "from .{} import http_{}\n"
 
 HTTP_ERRORS = {
-    404: 'controllers.web.errors.http_404',
-    500: 'controllers.web.errors.http_500'
 }
+
+INSTALL_ROUTER = """        {}.include_router(router={})\n"""
+INSTALL_PREFIXED_ROUTER = """        {}.include_router(prefix="{}", router={})\n"""
+INSTALL_WEB_ROUTE = """        {}.add_route("/{}", {}, name="ui:{}")\n"""
+INSTALL_API_ROUTE = """        {}.add_api_route("/api/{}", {}, name="api:{}")\n"""
+INSTALL_WEBSOCKET_ROUTE = """        {}.add_websocket_route("/socket/{}", {}, name="socket:{}")\n"""
+INSTALL_ERRORS_ROUTE= """        {}.add_exception_handler({}, {})\n"""
 
 FASTAPI_RENDERING_IMPORT = "from fastapi_framework_mvc.core import Process\nfrom fastapi.responses import HTMLResponse\n\n"
 
@@ -141,9 +219,7 @@ FASTAPI_FRAMEWORK_BASE_CONF = """SERVER:
     LOG:
         DIR: log
         LEVEL: debug
-
-DATABASES: {{}}
-
-FASTAPI:
-  CONFIG: {{}}
 """
+
+DATABASE_MODELS_IMPORTS = """from . import *\n"""
+DATABASE_IMPORTS = """from . import {}\n"""

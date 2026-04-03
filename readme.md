@@ -27,7 +27,7 @@ DATABASES:
     password: "replace this with your database user's password"
     database: "replace this with your database name"
     address: "replace this with your hostname"
-    models: "mysql (python module that require to be put under Models.Persistent module)"
+    models: "mysql (python module that require to be put under models.persistent module)"
     readonly: false
 ...
 ```
@@ -43,7 +43,7 @@ DATABASES:
     password: "replace this with your database user's password"
     database: "replace this with your database name"
     address: "replace this with your hostname"
-    models: "informix (python module that require to be put under Models.Persistent module)"
+    models: "informix (python module that require to be put under models.persistent module)"
     params:
       SERVER: "replace with your server name"
       CLIENT_LOCALE: "replace with your client locale"
@@ -182,7 +182,7 @@ The file based that contain your view functions must must also be imported into 
 
 you can create SQLAlchemy models by creating a new module under the ```models.persistent``` module and place each models inside your module that you previously created. 
 
-The models that you register into the app must be an ```database.Model ``` or ```database.get_models_by_name('replace that with your database connection name')``` object, you could import this object using the following line into your database model:
+The models that you register into the app must be an ```fastapi_framework_mvc.database.Model ``` or ```fastapi_framework_mvc.database.get_models_by_name('replace that with your database connection name')``` object, you could import this object using the following line into your database model:
 
 
 ```python
@@ -205,7 +205,7 @@ Those files are content configurable, you can also import layout inside the your
 
 # Using docker-compose file:
 
-* First start of the flask server:
+* First start of the fastapi server:
 
 ```bash
 docker-compose up 
@@ -280,12 +280,12 @@ CLI interface:
 * Powershell
 
 ```powershell
-fastapi_framework.cli.exe -h
+fastapi_framework_mvc.cli -h
 ```
 * Bash
 
 ```bash
-fastapi_framework.cli -h
+fastapi_framework_mvc.cli -h
 ```
 
 * Python module
@@ -301,36 +301,36 @@ Create a new project:
 * Powershell:
 
 ```powershell
-fastapi_framework.cli.exe -cp <your project>
+fastapi_framework.cli project -c <your project>
 ```
 
 or
 
 ```bash
-fastapi_framework_mvc.cli.exe --create-project <your project>
+fastapi_framework_mvc.cli controller -c <your project>
 ```
 
 * Bash:
 
 ```bash
-fastapi_framework.cli -cp <your project>
+fastapi_framework.cli project -c <your project>
 ```
 or
 
 ```bash
-fastapi_framework_mvc.cli --create-project <your project>
+fastapi_framework_mvc.cli project --create <your project>
 ```
 
 * Python module:
 
 ```bash
-python -m fastapi_framework_mvc.cli -cp <your project>
+python -m fastapi_framework_mvc.cli project -c <your project>
 ```
 
 or
 
 ```bash
-python -m fastapi_framework_mvc.cli --create-project <your project>
+python -m fastapi_framework_mvc.cli project --create <your project>
 ```
 
 A project can also be packaged and later used by the framework. In order to do so, you need to create a 
@@ -398,21 +398,99 @@ from your_first_project.models import persistent as  your_first_project # or any
 from your_second_project.models import persistent as  your_second_project # or any other identifier
 ```
 
-When the project is created, more command can be used when the env __"CONFIG_FILE"__ is set and can be run through
+Create new controllers:
+------------------------
+
+When the project is created, you can create new controllers, middlewares and even link controllers to the correct file under the server module. Example:
+
+1) create standalone controller:
+---------------------------------
 
 * Powershell:
 ```powershell
-fastapi_framework_mvc.app.exe
+fastapi_framework_mvc.cli controller -c controllers/ws/contents
 ```
 
 * Bash:
 ```bash
-fastapi_framework_mvc.app
+fastapi_framework_mvc.cli controller -c controllers/ws/contents
 ```
 
 * Python module:
 ```bash
-python -m fastapi_framework_mvc.app
+python -m fastapi_framework_mvc.cli controller -c controllers/ws/contents
+```
+
+2) create router controller:
+-----------------------------
+
+* Powershell:
+```powershell
+fastapi_framework_mvc.cli controller -c controllers/ws/contents -router
+```
+
+* Bash:
+```bash
+fastapi_framework_mvc.cli controller -c controllers/ws/contents -router
+```
+
+* Python module:
+```bash
+python -m fastapi_framework_mvc.cli controller -c controllers/ws/contents -router
+```
+
+3) install standalone controller:
+----------------------------------
+
+* Powershell:
+```powershell
+fastapi_framework_mvc.cli manager -l controllers/ws/contents
+```
+
+* Bash:
+```bash
+fastapi_framework_mvc.cli manager -l controllers/ws/contents
+```
+
+* Python module:
+```bash
+python -m fastapi_framework_mvc.cli manager -l controllers/ws/contents
+```
+
+4) install router controller:
+------------------------------
+
+* Powershell:
+```powershell
+fastapi_framework_mvc.cli manager -l controllers/ws/contents -p /api/
+```
+
+* Bash:
+```bash
+fastapi_framework_mvc.cli manager -l controllers/ws/contents -p /api/
+```
+
+* Python module:
+```bash
+python -m fastapi_framework_mvc.cli manager -l controllers/ws/contents -p /api/
+```
+
+5) Create middlewares:
+------------------------------
+
+* Powershell:
+```powershell
+fastapi_framework_mvc.cli middleware -c grant/authorization
+```
+
+* Bash:
+```bash
+fastapi_framework_mvc.cli middleware -c grant/authorization
+```
+
+* Python module:
+```bash
+python -m fastapi_framework_mvc.cli middleware -c grant/authorization
 ```
 see -h for usages
 

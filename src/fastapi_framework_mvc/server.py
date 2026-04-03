@@ -16,7 +16,7 @@ from fastapi_framework_mvc.core.logging import configure_basic_logger, setup_fil
 
 def args_parser():
     import argparse
-    parser = argparse.ArgumentParser(description='Python FLASK server')
+    parser = argparse.ArgumentParser(description='Python FastAPI server')
     parser.add_argument(
         '-D', '--debug',
         action='store_true',

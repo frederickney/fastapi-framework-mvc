@@ -4,6 +4,7 @@
 __author = "Frederick NEY"
 
 import os
+import logging
 import shutil
 
 from fastapi_framework_mvc.exceptions.runtime import web_denied
@@ -13,6 +14,7 @@ from . import templates
 @web_denied
 def create_dir(basepath, dir):
     if not os.path.exists(os.path.join(basepath, dir)):
+        logging.debug(f'Creating {dir}...')
         os.mkdir(os.path.join(basepath, dir), 0o755)
         while not os.path.exists(os.path.join(basepath, dir)):
             ("Waiting for path creation")
@@ -22,7 +24,6 @@ def create_dir(basepath, dir):
 def create_project(basepath, project):
     if not os.path.exists(os.path.join(basepath, project)):
         create_dir(basepath, project)
-
     create_dir(os.path.join(basepath, project), 'controllers')
     generate(os.path.join(basepath, project), "{}/{}".format('controllers', 'web'))
     generate(os.path.join(basepath, project), "{}/{}".format('controllers', 'ws'))
@@ -32,37 +33,46 @@ def create_project(basepath, project):
 
 
 @web_denied
-def generate(basepath, module, sub_module=None):
+def generate(basepath, module, sub_module=None, skip_root_level_init=False):
     if not os.path.exists(os.path.join(basepath, os.path.dirname(module))):
         generate(
-            basepath, "/".join(
-                [module.split('/')[i] for i in range(0, len(module.split('/')) - 1)]), module.split('/')[-1]
+            basepath, "/".join([module.split('/')[i] for i in range(0, len(module.split('/')) - 1)]), 
+            module.split('/')[-1],
+            skip_root_level_init=skip_root_level_init
         )
-        os.mkdir(os.path.join(basepath, os.path.dirname(module)), 0o755)
-        while not os.path.exists(os.path.join(basepath, os.path.dirname(module))):
-            "Waiting for path creation"
-    if sub_module is not None:
-        if os.path.exists(
-                os.path.join(os.path.join(basepath, os.path.dirname(module)), '__init__.py')
-        ):
-            fp = open(
-                os.path.join(os.path.join(basepath, os.path.dirname(module)), '__init__.py'),
-                "a"
-            )
-            fp.write(templates.IMPORTS.format(module.split("/")[-1]))
-            fp.close()
-        else:
-            fp = open(
-                os.path.join(os.path.join(basepath, os.path.dirname(module)), '__init__.py'),
-                "w"
-            )
+        if sub_module is not None:
+            logging.debug(f'Generating sub-module {module}...')
+            os.mkdir(os.path.join(basepath, module), 0o755)
+            while not os.path.exists(os.path.join(basepath, module)):
+                "Waiting for path creation"
+            logging.debug(f"Updating {os.path.dirname(module)}/__init__.py")
+            logging.debug(f"Creating {module}/__init__.py")
+            fp = open(os.path.join(basepath, module, "__init__.py"), "w")
             fp.write(templates.PYTHON_FILE_HEAD)
-            fp.write(templates.IMPORTS.format(module.split("/")[-1]))
             fp.close()
-    else:
+            fp = open(os.path.join(basepath, os.path.dirname(module), "__init__.py"), "a")
+            fp.write(templates.IMPORTS.format(os.path.basename(module)))
+            fp.close()
+    if not os.path.exists(os.path.join(basepath, module)):
+        if sub_module is not None:
+            logging.debug(f'Generating {module}...')
+            os.mkdir(os.path.join(basepath, module), 0o755)
+            while not os.path.exists(os.path.join(basepath, module)):
+                "Waiting for path creation"
+            logging.debug(f"Creating {module}/__init__.py")
+            fp = open(os.path.join(basepath, module, "__init__.py"), "w")
+            fp.write(templates.PYTHON_FILE_HEAD)
+            fp.close()
+            if os.path.dirname(module) != '' and os.path.dirname(module) is not None:
+                logging.debug(f"Updating {os.path.dirname(module)}/__init__.py")
+                fp = open(os.path.join(basepath, os.path.dirname(module), "__init__.py"), "a")
+                fp.write(templates.IMPORTS.format(os.path.basename(module)))
+                fp.close()
+    elif not skip_root_level_init:
         if not os.path.exists(
                 os.path.join(os.path.join(basepath, os.path.dirname(module)), '__init__.py')
         ):
+            logging.debug(f'Generating module {os.path.dirname(module)}/__init__.py...')
             fp = open(
                 os.path.join(os.path.join(basepath, os.path.dirname(module)), '__init__.py'),
                 "w"
@@ -191,6 +201,30 @@ def try_create_socket_entry(path):
 
 
 @web_denied
+def try_create_plugins_entry(path):
+    if os.path.exists(os.path.join(path, 'server')):
+        if not os.path.exists(os.path.join(os.path.join(path, 'server'), '{}.py'.format('plugins'))):
+            fp = open(os.path.join(os.path.join(path, 'server'), '{}.py'.format('plugins')), 'w')
+            fp.write(templates.PLUGINS_ENTRY)
+            fp.close()
+            fp = open(os.path.join(os.path.join(path, 'server'), '__init__.py'), 'a')
+            fp.write(templates.IMPORTS.format('plugins'))
+            fp.close()
+
+
+@web_denied
+def try_create_middleware_entry(path):
+    if os.path.exists(os.path.join(path, 'server')):
+        if not os.path.exists(os.path.join(os.path.join(path, 'server'), '{}.py'.format('middleware'))):
+            fp = open(os.path.join(os.path.join(path, 'server'), '{}.py'.format('middleware')), 'w')
+            fp.write(templates.MIDDLEWARE_ENTRY)
+            fp.close()
+            fp = open(os.path.join(os.path.join(path, 'server'), '__init__.py'), 'a')
+            fp.write(templates.IMPORTS.format('middleware'))
+            fp.close()
+
+
+@web_denied
 def create_server(project, path, _inst_dir):
     if not os.path.exists(os.path.join(path, 'server')):
         create_dir(path, 'server')
@@ -205,6 +239,9 @@ def create_server(project, path, _inst_dir):
     try_create_error_controller(path)
     try_create_web_entry(path)
     try_create_ws_entry(path)
+    try_create_socket_entry(path)
+    try_create_plugins_entry(path)
+    try_create_middleware_entry(path)
     try_create_default_conf(path, project)
 
 

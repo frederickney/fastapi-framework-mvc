@@ -36,7 +36,7 @@ from fastapi_framework_mvc.common import BaseApp
 from fastapi_framework_mvc.core.process import number_of_workers
 from six import iteritems
 
-parser = argparse.ArgumentParser(description='Python FLASK USGI server')
+parser = argparse.ArgumentParser(description='Python FastAPI WSGI server')
 parser.add_argument(
     '-d', '--disable-log-files',
     action='store_true',
