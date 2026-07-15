@@ -301,7 +301,7 @@ Create a new project:
 * Powershell:
 
 ```powershell
-fastapi_framework.cli project -c <your project>
+fastapi_framework_mvc.cli project -c <your project>
 ```
 
 or
@@ -313,7 +313,7 @@ fastapi_framework_mvc.cli controller -c <your project>
 * Bash:
 
 ```bash
-fastapi_framework.cli project -c <your project>
+fastapi_framework_mvc.cli project -c <your project>
 ```
 or
 
