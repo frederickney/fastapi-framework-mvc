@@ -1,0 +1,31 @@
+version: '3.5'
+services:
+  fastapi:
+    image: python3/fastapi-framework-mvc:1.0.3
+    build:
+      context: .
+    entrypoint: /usr/bin/python3
+    command: -m flask_framework.wsgi
+    working_dir: /srv/http
+    shm_size: 512m
+    environment:
+      CONFIG_FILE: /etc/server/config.yml
+      LOG_DIR: /var/log/server/
+      LOG_LEVEL: warning
+    ports:
+      - 4200:4200
+    depends_on:
+      - mysql-server
+    links:
+      - mysql-server
+
+  mysql-server:
+    image: mysql/mysql-server:5.7
+    shm_size: 1024m
+    environment:
+      MYSQL_DATABASE: flask
+      MYSQL_ROOT_PASSWORD: "mysql-root-pass"
+      MYSQL_PASSWORD: "mysql-pass"
+      MYSQL_USER: "mysql-user"
+    volumes:
+      - ./mysql/:/var/lib/mysql/
