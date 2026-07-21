@@ -4,7 +4,9 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/fastapi-framework-mvc.svg)](https://pypi.org/project/fastapi-framework-mvc/)
 [![Python versions](https://img.shields.io/pypi/pyversions/fastapi-framework-mvc.svg)](https://pypi.org/project/fastapi-framework-mvc/)
+[![Downloads](https://img.shields.io/pypi/dm/fastapi-framework-mvc.svg)](https://pypi.org/project/fastapi-framework-mvc/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+[![Issues: ](https://img.shields.io/github/issues/frederickney/fastapi-framework-mvc.svg)](https://github.com/frederickney/fastapi-framework-mvc/issues)
 
 ---
 
@@ -23,6 +25,7 @@ FastAPI is intentionally unopinionated — it gives you routers and dependency i
 - 📦 **Packageable projects** — build your app into a pip package and compose several packaged apps into one server.
 - ♻️ **Database migrations** — Allow alembic to use configured database connection(s) and drive its own migration plan over the database.
 - 🤐 **Secrets managment** — All secrets / variables can be injected to the yaml configuration file throughout deployment environment / secret variable, names need to map the same ones into the yaml file.
+- 🛡️ **Multi Factor Authentication (MFA)** — Allows user authentication through various single sign one provider (google, microsoft, keycloak, PingID and many more) using OpenID protocol.
 
 ---
 
