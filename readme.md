@@ -14,7 +14,7 @@
 
 FastAPI is intentionally unopinionated — it gives you routers and dependency injection and lets you organize the rest yourself. That freedom is great until a project grows and every codebase invents its own layout.
 
-`fastapi-framework-mvc` adds a **convention-over-configuration** layer so teams get a predictable, Rails/Django-style structure without giving up FastAPI's performance:
+`fastapi-framework-mvc` adds a *convention-over-configuration** layer so teams get a predictable, Model-View-Controller structure without giving up FastAPI's performance:
 
 - 🏗️ **A real MVC structure** — controllers, models, views/templates in known places, so anyone can navigate any project.
 - 🧰 **A project & code generator** — scaffold a new project, controllers, routers, and middlewares from the CLI instead of copy-pasting boilerplate.
@@ -126,13 +126,15 @@ myapp/
 ├── controllers/
 │   ├── web/                  # HTML/file controllers (registered in web.py)
 │   │   └── errors/           # HTTP error handlers (404, 500, …)
-│   └── ws/                   # REST API controllers (registered in ws.py)
+│   ├── ws/                   # REST API controllers (registered in ws.py)
+│   └── socket/               # Web socket controllers (registered in socket.py)
 ├── models/
 │   ├── forms/                # request/form models
 │   └── persistent/           # SQLAlchemy models
 ├── server/
 │   ├── middleware.py         # middlewares registration
 │   ├── plugins.py            # plugins registration
+│   ├── socket.py             # Web Socket registration
 │   ├── web.py                # web route registration
 │   ├── ws.py                 # REST route registration
 │   └── errorhandler.py       # error route registration
