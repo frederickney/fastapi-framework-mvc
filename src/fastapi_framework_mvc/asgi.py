@@ -86,6 +86,11 @@ def start(args: argparse.ArgumentParser):
     except RuntimeError as e:
         exit(255)
 
+def main():
+    """
+    main for windows 
+    """
+    start(args)
 
 """"
 main entrypoint for fastapi_framework_mvc.wsgi
